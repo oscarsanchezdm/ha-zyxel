@@ -17,6 +17,8 @@ from custom_components.ha_zyxel.const import (
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
 )
+from custom_components.ha_zyxel.services import async_setup_services, async_unload_services
+from custom_components.ha_zyxel.sms_client import ZyxelSmsClient
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -73,13 +75,17 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     await coordinator.async_config_entry_first_refresh()
 
+    sms_client = ZyxelSmsClient(host, username, password)
+
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][entry.entry_id] = {
         "coordinator": coordinator,
         "router": router,
+        "sms_client": sms_client,
     }
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    async_setup_services(hass)
 
     return True
 
@@ -96,5 +102,6 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     )
     if unload_ok:
         hass.data[DOMAIN].pop(entry.entry_id)
+        async_unload_services(hass)
 
     return unload_ok

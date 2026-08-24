@@ -1,0 +1,24 @@
+send_sms:
+  name: Send SMS
+  description: Send an SMS through the Zyxel cellular modem
+  fields:
+    number:
+      name: Number
+      description: Destination number in E.164 format (e.g. +34600111222)
+      example: "+34600111222"
+      required: true
+      selector:
+        text:
+    text:
+      name: Message
+      description: SMS body (encoded as GSM 7-bit)
+      example: "test message"
+      required: true
+      selector:
+        text:
+    device_id:
+      name: Device
+      description: Config entry id when more than one Zyxel device is configured
+      required: false
+      selector:
+        text:

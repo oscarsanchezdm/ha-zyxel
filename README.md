@@ -10,7 +10,7 @@ __Home Assistant integration for Zyxel devices__
 
 <img src="https://raw.githubusercontent.com/zulufoxtrot/ha-zyxel/refs/heads/main/resources/screenshot.png" alt="Zyxel Logo" />
 
-[![Open ha-zyxel on Home Assistant Community Store (HACS)](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=zulufoxtrot&repository=ha-zyxel&category=integration)
+[![Open ha-zyxel on Home Assistant Community Store (HACS)](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=oscarsanchezdm&repository=ha-zyxel&category=integration)
 
 ## Supported devices
 
@@ -53,7 +53,7 @@ Prerequisites:
 ### Install manually
 
 1. SSH into your HA instance
-3. `git clone https://github.com/zulufoxtrot/ha-zyxel`
+3. `git clone https://github.com/oscarsanchezdm/ha-zyxel`
 2. Navigate to `ha-zyxel/custom_components`
 4. Copy `ha_zyxel` to your HA instance's `custom_components` directory
 4. Restart your HA instance
@@ -82,10 +82,27 @@ Note: the Mushroom card extension is required for the above code to work.
 
 In theory, all items listed [here](https://github.com/pkorpine/nr7101?tab=readme-ov-file#example-output) should be available as entities. The entities are generated dynamically, meaning they can vary from one device to another. They depend on what the device lets us see.
 
+### Reboot button
+
+The integration exposes a **Zyxel Reboot Device** button entity. Press it from the UI or call `button.press` on `button.zyxel_reboot_device` to reboot the router remotely.
+
+### Send SMS service
+
+On devices with a cellular modem that supports SMS (e.g. FWA505), use:
+
+```yaml
+service: ha_zyxel.send_sms
+data:
+  number: "+34600111222"
+  text: "Hello from Home Assistant"
+```
+
+Optional `device_id` is the config entry id when multiple Zyxel devices are configured.
+
 ## Support
 
-Please submit an [issue](https://github.com/zulufoxtrot/ha-zyxel/issues).
+Please submit an [issue](https://github.com/oscarsanchezdm/ha-zyxel/issues).
 
 ## Credits
 
-This integration uses the [n7101 library](https://github.com/pkorpine/nr7101) by pkorpine.
+This is a fork of [zulufoxtrot/ha-zyxel](https://github.com/zulufoxtrot/ha-zyxel) with SMS sending support added. The integration uses the [nr7101 library](https://github.com/zulufoxtrot/nr7101).
