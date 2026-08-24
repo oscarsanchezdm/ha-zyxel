@@ -9,6 +9,11 @@ from nr7101 import nr7101
 
 _LOGGER = logging.getLogger(__name__)
 
+# Bound every HTTP call. nr7101 sets no request timeouts, so a hung request
+# would otherwise pile up worker threads that share the router's one session
+# and desync its AES key (shows up as "decrypt" errors that never heal).
+REQUEST_TIMEOUT = 15
+
 _ENDPOINTS = (
     ("cellwan_status", "cellular"),
     ("Traffic_Status", "traffic"),
@@ -30,14 +35,14 @@ class ZyxelConnectionError(Exception):
 
 
 def create_router(host: str, username: str, password: str) -> Any:
-    """Create a router with connection state isolated from other instances.
+    """Create a router with isolated cookies and a per-request timeout.
 
     nr7101 currently uses a mutable dictionary as its default ``params``
     argument. Passing a new dictionary explicitly prevents cookies from a
     config-flow instance being reused by the config-entry instance, where
     they would be paired with a different AES key.
     """
-    return nr7101.NR7101(host, username, password, {})
+    return nr7101.NR7101(host, username, password, {"timeout": REQUEST_TIMEOUT})
 
 
 def authenticate(router: Any) -> None:

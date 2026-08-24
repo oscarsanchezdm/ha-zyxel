@@ -3,7 +3,6 @@ import asyncio
 import logging
 from datetime import timedelta
 
-import async_timeout
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
@@ -13,6 +12,7 @@ from custom_components.ha_zyxel.api import create_router, fetch_status
 from custom_components.ha_zyxel.const import (
     CONF_HOST,
     CONF_PASSWORD,
+    CONF_SCAN_INTERVAL,
     CONF_USERNAME,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
@@ -26,13 +26,11 @@ _LOGGER = logging.getLogger(__name__)
 nr7101_logger = logging.getLogger("nr7101.nr7101")
 nr7101_logger.setLevel(logging.WARNING)
 
-PLATFORMS = ["sensor", "button"]
+PLATFORMS = ["sensor", "button", "device_tracker", "binary_sensor"]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Zyxel integration from a config entry."""
-
-
     host = entry.data[CONF_HOST]
     username = entry.data[CONF_USERNAME]
     password = entry.data[CONF_PASSWORD]
@@ -45,24 +43,36 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         _LOGGER.error("Could not connect to Zyxel router: %s", ex)
         raise ConfigEntryNotReady from ex
 
-    async def async_update_data():
-        """Fetch data from the router."""
+    scan_interval = entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+    sms_client = ZyxelSmsClient(host, username, password)
+
+    hass.data.setdefault(DOMAIN, {})
+    entry_data = {
+        "router": router,
+        "sms_client": sms_client,
+    }
+    hass.data[DOMAIN][entry.entry_id] = entry_data
+
+    def _fetch():
+        """Fetch router data; recreate the session once on failure (self-heal)."""
+        client = entry_data["router"]
         try:
-            async with async_timeout.timeout(15):
-                def get_all_data():
-                    data = fetch_status(router)
+            return fetch_status(client)
+        except Exception as err:  # noqa: BLE001 - desync/timeout/etc.
+            _LOGGER.debug("Zyxel fetch failed, recreating session: %s", err)
+            client = create_router(host, username, password)
+            entry_data["router"] = client
+            return fetch_status(client)
 
-                    if not data:
-                        raise UpdateFailed("No data received from router")
-
-                    return data
-
-                return await hass.async_add_executor_job(get_all_data)
-        except asyncio.TimeoutError:
-            router.sessionkey = None
-            raise UpdateFailed("Router data fetch timed out")
+    async def async_update_data():
+        # No asyncio timeout wrapper: each HTTP call is bounded by REQUEST_TIMEOUT
+        # and DataUpdateCoordinator serialises refreshes, so the executor job always
+        # finishes before the next one starts -> no overlapping threads / session desync.
+        try:
+            return await hass.async_add_executor_job(_fetch)
+        except UpdateFailed:
+            raise
         except Exception as err:
-            router.sessionkey = None
             raise UpdateFailed(f"Error communicating with router: {err}") from err
 
     coordinator = DataUpdateCoordinator(
@@ -70,24 +80,22 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         _LOGGER,
         name=DOMAIN,
         update_method=async_update_data,
-        update_interval=timedelta(seconds=DEFAULT_SCAN_INTERVAL),
+        update_interval=timedelta(seconds=scan_interval),
     )
 
     await coordinator.async_config_entry_first_refresh()
+    entry_data["coordinator"] = coordinator
 
-    sms_client = ZyxelSmsClient(host, username, password)
-
-    hass.data.setdefault(DOMAIN, {})
-    hass.data[DOMAIN][entry.entry_id] = {
-        "coordinator": coordinator,
-        "router": router,
-        "sms_client": sms_client,
-    }
-
+    entry.async_on_unload(entry.add_update_listener(_async_update_listener))
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     async_setup_services(hass)
 
     return True
+
+
+async def _async_update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Reload the entry when its options change (scan interval, etc.)."""
+    await hass.config_entries.async_reload(entry.entry_id)
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:

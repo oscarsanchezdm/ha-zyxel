@@ -86,6 +86,10 @@ In theory, all items listed [here](https://github.com/pkorpine/nr7101?tab=readme
 
 The integration exposes a **Zyxel Reboot Device** button entity. Press it from the UI or call `button.press` on `button.zyxel_reboot_device` to reboot the router remotely.
 
+### Device tracking
+
+LAN clients are tracked as `device_tracker` entities (with consider-home), plus optional per-client diagnostic sensors and a connectivity binary sensor. Configure **scan interval**, **consider home**, and **track all** from the integration options.
+
 ### Send SMS service
 
 On devices with a cellular modem that supports SMS (e.g. FWA505), use:
@@ -105,4 +109,4 @@ Please submit an [issue](https://github.com/oscarsanchezdm/ha-zyxel/issues).
 
 ## Credits
 
-This is a fork of [zulufoxtrot/ha-zyxel](https://github.com/zulufoxtrot/ha-zyxel) with SMS sending support added. The integration uses the [nr7101 library](https://github.com/zulufoxtrot/nr7101).
+This is a fork of [zulufoxtrot/ha-zyxel](https://github.com/zulufoxtrot/ha-zyxel) with SMS sending support and [PR #57](https://github.com/zulufoxtrot/ha-zyxel/pull/57) (device tracking + connection self-heal) integrated. The integration uses the [nr7101 library](https://github.com/zulufoxtrot/nr7101).

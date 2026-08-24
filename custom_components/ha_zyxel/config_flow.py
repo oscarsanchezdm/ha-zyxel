@@ -12,7 +12,17 @@ from .api import (
     create_router,
     fetch_status,
 )
-from .const import DEFAULT_HOST, DEFAULT_USERNAME, DOMAIN
+from .const import (
+    CONF_CONSIDER_HOME,
+    CONF_SCAN_INTERVAL,
+    CONF_TRACK_ALL,
+    DEFAULT_CONSIDER_HOME,
+    DEFAULT_HOST,
+    DEFAULT_SCAN_INTERVAL,
+    DEFAULT_TRACK_ALL,
+    DEFAULT_USERNAME,
+    DOMAIN,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -33,12 +43,11 @@ async def validate_input(hass: core.HomeAssistant, data):
     """Validate that the user input allows us to connect."""
 
     try:
-        # Create router instance and test connection
         router = await hass.async_add_executor_job(
             create_router,
             data[CONF_HOST],
             data[CONF_USERNAME],
-            data[CONF_PASSWORD]
+            data[CONF_PASSWORD],
         )
 
         await hass.async_add_executor_job(fetch_status, router)
@@ -56,6 +65,12 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     VERSION = 1
     CONNECTION_CLASS = config_entries.CONN_CLASS_LOCAL_POLL
+
+    @staticmethod
+    @core.callback
+    def async_get_options_flow(config_entry):
+        """Return the options flow handler."""
+        return OptionsFlowHandler()
 
     async def async_step_user(self, user_input=None):
         """Handle the initial step."""
@@ -99,3 +114,31 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             return self.async_show_form(
                 step_id="user", data_schema=DATA_SCHEMA, errors=errors
             )
+
+
+class OptionsFlowHandler(config_entries.OptionsFlow):
+    """Handle Zyxel options: poll interval, consider-home, and track-all."""
+
+    async def async_step_init(self, user_input=None):
+        """Manage the options."""
+        if user_input is not None:
+            return self.async_create_entry(title="", data=user_input)
+
+        opts = self.config_entry.options
+        schema = vol.Schema(
+            {
+                vol.Optional(
+                    CONF_SCAN_INTERVAL,
+                    default=opts.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
+                ): vol.All(vol.Coerce(int), vol.Range(min=10, max=3600)),
+                vol.Optional(
+                    CONF_CONSIDER_HOME,
+                    default=opts.get(CONF_CONSIDER_HOME, DEFAULT_CONSIDER_HOME),
+                ): vol.All(vol.Coerce(int), vol.Range(min=0, max=86400)),
+                vol.Optional(
+                    CONF_TRACK_ALL,
+                    default=opts.get(CONF_TRACK_ALL, DEFAULT_TRACK_ALL),
+                ): bool,
+            }
+        )
+        return self.async_show_form(step_id="init", data_schema=schema)

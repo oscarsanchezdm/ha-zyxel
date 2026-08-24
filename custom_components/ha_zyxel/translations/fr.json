@@ -17,5 +17,22 @@
     "abort": {
       "already_configured": "L'appareil est déjà configuré"
     }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Options Zyxel",
+        "data": {
+          "scan_interval": "Intervalle de scan (secondes)",
+          "consider_home": "Considérer à la maison (secondes)",
+          "track_all": "Suivre tous les appareils découverts"
+        },
+        "data_description": {
+          "scan_interval": "Fréquence d'interrogation du routeur pour les appareils connectés (10-3600).",
+          "consider_home": "Durée pendant laquelle un appareil peut être invisible avant d'être marqué absent.",
+          "track_all": "Créer un tracker activé pour chaque appareil vu par le routeur, pas seulement ceux déjà connus de Home Assistant."
+        }
+      }
+    }
   }
 }
