@@ -30,7 +30,7 @@
         "data_description": {
           "scan_interval": "Fréquence d'interrogation du routeur pour les appareils connectés (10-3600).",
           "consider_home": "Durée pendant laquelle un appareil peut être invisible avant d'être marqué absent.",
-          "track_all": "Créer un tracker activé pour chaque appareil vu par le routeur, pas seulement ceux déjà connus de Home Assistant."
+          "track_all": "Désactivé : seuls les clients déjà connus de Home Assistant (ou déjà suivis) obtiennent des entités. Activé : chaque client LAN signalé par le routeur est ajouté."
         }
       }
     }

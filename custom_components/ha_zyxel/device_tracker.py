@@ -7,8 +7,6 @@ from datetime import datetime, timedelta, timezone
 from homeassistant.components.device_tracker import ScannerEntity, SourceType
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC
-from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.helpers import entity_registry as er
@@ -20,7 +18,7 @@ from custom_components.ha_zyxel.const import (
     DEFAULT_TRACK_ALL,
     DOMAIN,
 )
-from custom_components.ha_zyxel.helpers import lan_hosts
+from custom_components.ha_zyxel.helpers import lan_hosts, trackable_macs
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -28,7 +26,7 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
-    """Create a tracker for every LAN host and pick up new ones as they appear."""
+    """Create trackers for allowed LAN hosts and pick up new ones over time."""
     coordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]
     consider_home = entry.options.get(CONF_CONSIDER_HOME, DEFAULT_CONSIDER_HOME)
     track_all = entry.options.get(CONF_TRACK_ALL, DEFAULT_TRACK_ALL)
@@ -49,8 +47,8 @@ async def async_setup_entry(
     @callback
     def _discover() -> None:
         new = [
-            ZyxelDeviceTracker(coordinator, entry, mac, consider_home, track_all)
-            for mac in lan_hosts(coordinator)
+            ZyxelDeviceTracker(coordinator, entry, mac, consider_home)
+            for mac in trackable_macs(hass, entry, coordinator, track_all=track_all)
             if mac not in tracked
         ]
         for ent in new:
@@ -63,7 +61,11 @@ async def async_setup_entry(
 
 
 class ZyxelDeviceTracker(CoordinatorEntity, ScannerEntity):
-    """A single LAN client seen by the Zyxel router."""
+    """A single LAN client seen by the Zyxel router.
+
+    No DeviceInfo: ScannerEntity must not create devices. HA links the tracker to
+    an existing device by MAC when one already exists.
+    """
 
     _attr_should_poll = False
     _attr_has_entity_name = False
@@ -74,24 +76,15 @@ class ZyxelDeviceTracker(CoordinatorEntity, ScannerEntity):
         entry: ConfigEntry,
         mac: str,
         consider_home: int,
-        track_all: bool = False,
     ) -> None:
         """Initialise the tracker for one MAC address."""
         super().__init__(coordinator)
         self._mac = mac
         self._consider_home = timedelta(seconds=consider_home)
-        self._track_all = track_all
         self._last_seen: datetime | None = None
         self._attr_unique_id = mac
         self._update_last_seen()
-
-        friendly = self._friendly_name()
-        self._attr_name = friendly
-        # MAC connection lets HA merge this onto an existing device of the same MAC.
-        self._attr_device_info = DeviceInfo(
-            connections={(CONNECTION_NETWORK_MAC, mac)},
-            default_name=friendly,
-        )
+        self._attr_name = self._friendly_name()
 
     @property
     def _host(self) -> dict:
@@ -119,14 +112,6 @@ class ZyxelDeviceTracker(CoordinatorEntity, ScannerEntity):
     @property
     def source_type(self) -> SourceType:
         return SourceType.ROUTER
-
-    @property
-    def entity_registry_enabled_default(self) -> bool:
-        # Default (like AsusWRT): only devices HA already knows by MAC are enabled.
-        # With the "track all" option on, enable every discovered device.
-        if self._track_all:
-            return True
-        return super().entity_registry_enabled_default
 
     @property
     def is_connected(self) -> bool:

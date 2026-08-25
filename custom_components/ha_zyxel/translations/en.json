@@ -30,7 +30,7 @@
         "data_description": {
           "scan_interval": "How often to poll the router for connected devices (10-3600).",
           "consider_home": "How long a device may be unseen before it is marked away.",
-          "track_all": "Create an enabled tracker for every device the router sees, not just ones Home Assistant already knows."
+          "track_all": "When off, only clients already known to Home Assistant (or already tracked) get entities. When on, every LAN client the router reports is added."
         }
       }
     }

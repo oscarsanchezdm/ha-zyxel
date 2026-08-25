@@ -17,22 +17,23 @@ from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from custom_components.ha_zyxel.const import DOMAIN
-from custom_components.ha_zyxel.helpers import lan_hosts
+from custom_components.ha_zyxel.const import CONF_TRACK_ALL, DEFAULT_TRACK_ALL, DOMAIN
+from custom_components.ha_zyxel.helpers import lan_hosts, trackable_macs
 
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
-    """Create a connectivity sensor per LAN host, picking up new ones over time."""
+    """Create a connectivity sensor per allowed LAN host."""
     coordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]
+    track_all = entry.options.get(CONF_TRACK_ALL, DEFAULT_TRACK_ALL)
     tracked: set[str] = set()
 
     @callback
     def _discover() -> None:
         new = [
             ZyxelConnectivitySensor(coordinator, mac)
-            for mac in lan_hosts(coordinator)
+            for mac in trackable_macs(hass, entry, coordinator, track_all=track_all)
             if mac not in tracked
         ]
         for ent in new:

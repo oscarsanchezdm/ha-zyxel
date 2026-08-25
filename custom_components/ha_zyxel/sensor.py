@@ -18,8 +18,8 @@ from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from custom_components.ha_zyxel.const import DOMAIN
-from custom_components.ha_zyxel.helpers import lan_hosts
+from custom_components.ha_zyxel.const import CONF_TRACK_ALL, DEFAULT_TRACK_ALL, DOMAIN
+from custom_components.ha_zyxel.helpers import lan_hosts, trackable_macs
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -259,13 +259,15 @@ async def async_setup_entry(
     sensors.append(ZyxelStartupTime(coordinator, entry))
     async_add_entities(sensors)
 
-    # Per-client diagnostic sensors (signal / link rate), discovered dynamically.
+    # Per-client diagnostic sensors (signal / link rate), discovered dynamically
+    # for the same MAC set as device trackers (respects track_all).
     tracked: set[str] = set()
+    track_all = entry.options.get(CONF_TRACK_ALL, DEFAULT_TRACK_ALL)
 
     @callback
     def _discover_clients() -> None:
         new = []
-        for mac in lan_hosts(coordinator):
+        for mac in trackable_macs(hass, entry, coordinator, track_all=track_all):
             if mac not in tracked:
                 tracked.add(mac)
                 new.extend(
