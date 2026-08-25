@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+from datetime import datetime, timedelta, timezone
 from typing import Any
 
 from homeassistant.components.sensor import (
@@ -10,7 +11,7 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import EntityCategory
+from homeassistant.const import EntityCategory, UnitOfTime
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC
 from homeassistant.helpers.entity import DeviceInfo
@@ -22,8 +23,25 @@ from custom_components.ha_zyxel.helpers import lan_hosts
 
 _LOGGER = logging.getLogger(__name__)
 
+# How far calculated boot time may drift before we accept a new value (reboot).
+_STARTUP_STABILITY_SECONDS = 30
+
 # Define some known sensor types for proper configuration
 KNOWN_SENSORS = {
+    "Uptime": {
+        "name": "Uptime",
+        "unit": UnitOfTime.SECONDS,
+        "icon": "mdi:clock-outline",
+        "device_class": SensorDeviceClass.DURATION,
+        "state_class": SensorStateClass.MEASUREMENT,
+    },
+    "UpTime": {
+        "name": "Uptime",
+        "unit": UnitOfTime.SECONDS,
+        "icon": "mdi:clock-outline",
+        "device_class": SensorDeviceClass.DURATION,
+        "state_class": SensorStateClass.MEASUREMENT,
+    },
     "INTF_RSSI": {
         "name": "Cellular RSSI",
         "unit": "dBm",
@@ -177,6 +195,48 @@ def _is_value_scalar(value: Any) -> bool:
     return isinstance(value, (str, int, float, bool)) or value is None
 
 
+def _known_sensor_config(leaf: str) -> dict | None:
+    """Look up a curated sensor config, case-insensitive on the leaf key."""
+    if leaf in KNOWN_SENSORS:
+        return KNOWN_SENSORS[leaf]
+    lowered = leaf.lower()
+    for key, config in KNOWN_SENSORS.items():
+        if key.lower() == lowered:
+            return config
+    return None
+
+
+def _parse_uptime_seconds(value: Any) -> int | None:
+    """Coerce a router uptime field to whole seconds."""
+    if value is None or value is False:
+        return None
+    try:
+        return int(float(value))
+    except (TypeError, ValueError):
+        return None
+
+
+def _find_uptime_seconds(data: dict | None) -> int | None:
+    """Pick the best uptime reading from flattened coordinator data."""
+    preferred: list[int] = []
+    others: list[int] = []
+    for key, value in _flatten_dict(data or {}).items():
+        if key.split(".")[-1].lower() != "uptime":
+            continue
+        seconds = _parse_uptime_seconds(value)
+        if seconds is None:
+            continue
+        if "device_info" in key.lower() or "deviceinfo" in key.lower():
+            preferred.append(seconds)
+        else:
+            others.append(seconds)
+    if preferred:
+        return preferred[0]
+    if others:
+        return others[0]
+    return None
+
+
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
@@ -188,14 +248,15 @@ async def async_setup_entry(
     for key, value in _flatten_dict(coordinator.data or {}).items():
         if not _is_value_scalar(value):
             continue
-        sensor_config = KNOWN_SENSORS.get(key.split(".")[-1], None)
+        sensor_config = _known_sensor_config(key.split(".")[-1])
         if sensor_config:
             sensors.append(ConfiguredZyxelSensor(coordinator, entry, key, sensor_config))
         else:
             sensors.append(GenericZyxelSensor(coordinator, entry, key))
 
-    # Router-level primary sensor: number of connected clients.
+    # Router-level primary sensors.
     sensors.append(ZyxelConnectedClients(coordinator, entry))
+    sensors.append(ZyxelStartupTime(coordinator, entry))
     async_add_entities(sensors)
 
     # Per-client diagnostic sensors (signal / link rate), discovered dynamically.
@@ -277,12 +338,15 @@ class ConfiguredZyxelSensor(AbstractZyxelSensor):
         self._attr_state_class = config["state_class"]
 
     @property
-    def state(self):
-        """Return the state of the sensor."""
+    def native_value(self):
+        """Return the native value of the sensor."""
         try:
-            return self._get_value_from_path()
+            value = self._get_value_from_path()
         except (KeyError, AttributeError):
             return None
+        if self._attr_device_class == SensorDeviceClass.DURATION:
+            return _parse_uptime_seconds(value)
+        return value
 
 
 class GenericZyxelSensor(AbstractZyxelSensor):
@@ -295,8 +359,8 @@ class GenericZyxelSensor(AbstractZyxelSensor):
         return f"Zyxel {'.'.join(name_parts)}"
 
     @property
-    def state(self):
-        """Return the state of the sensor."""
+    def native_value(self):
+        """Return the native value of the sensor."""
         try:
             return self._get_value_from_path()
         except (KeyError, AttributeError):
@@ -327,6 +391,49 @@ class ZyxelConnectedClients(CoordinatorEntity, SensorEntity):
     @property
     def native_value(self) -> int:
         return sum(1 for h in lan_hosts(self.coordinator).values() if h.get("Active"))
+
+
+class ZyxelStartupTime(CoordinatorEntity, SensorEntity):
+    """Boot timestamp derived from uptime; stable across poll jitter."""
+
+    _attr_name = "Startup time"
+    _attr_icon = "mdi:clock-start"
+    _attr_device_class = SensorDeviceClass.TIMESTAMP
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
+
+    def __init__(self, coordinator, entry: ConfigEntry) -> None:
+        super().__init__(coordinator)
+        self._startup: datetime | None = None
+        self._attr_unique_id = f"{entry.entry_id}_startup_time"
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, entry.entry_id)},
+            name=f"Zyxel ({entry.data['host']})",
+            manufacturer="Zyxel",
+        )
+        self._refresh_startup()
+
+    def _refresh_startup(self) -> None:
+        uptime = _find_uptime_seconds(self.coordinator.data)
+        if uptime is None:
+            return
+        calculated = (
+            datetime.now(timezone.utc) - timedelta(seconds=uptime)
+        ).replace(microsecond=0)
+        if self._startup is None:
+            self._startup = calculated
+            return
+        # Keep the previous stamp unless uptime reset (reboot) or large drift.
+        if abs((calculated - self._startup).total_seconds()) >= _STARTUP_STABILITY_SECONDS:
+            self._startup = calculated
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        self._refresh_startup()
+        super()._handle_coordinator_update()
+
+    @property
+    def native_value(self) -> datetime | None:
+        return self._startup
 
 
 class _ZyxelClientSensor(CoordinatorEntity, SensorEntity):
