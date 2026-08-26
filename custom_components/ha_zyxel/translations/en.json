@@ -25,12 +25,20 @@
         "data": {
           "scan_interval": "Scan interval (seconds)",
           "consider_home": "Consider home (seconds)",
-          "track_all": "Track all discovered devices"
+          "track_all": "Track all discovered devices",
+          "poll_traffic": "Poll Traffic_Status",
+          "poll_cardpage": "Poll cardpage_status",
+          "poll_wifi_mesh": "Poll Wi‑Fi EasyMesh",
+          "poll_one_connect": "Poll One Connect"
         },
         "data_description": {
-          "scan_interval": "How often to poll the router for connected devices (10-3600).",
+          "scan_interval": "How often to poll the router (20-3600s). Each enabled OID is an HTTPS request; keep ≥60s on small cellular CPEs.",
           "consider_home": "How long a device may be unseen before it is marked away.",
-          "track_all": "When off, only clients already known to Home Assistant (or already tracked) get entities. When on, every LAN client the router reports is added."
+          "track_all": "When off, only clients already known to Home Assistant (or already tracked) get entities. When on, every LAN client the router reports is added.",
+          "poll_traffic": "Extra OID for per-interface traffic counters. Off by default. Disabling removes related sensors.",
+          "poll_cardpage": "Extra OID with dashboard/card-page fields. Off by default. Disabling removes related sensors.",
+          "poll_wifi_mesh": "Extra OID for EasyMesh settings. Off by default. Disabling removes related sensors.",
+          "poll_one_connect": "Extra OID for One Connect. Off by default. Disabling removes related sensors."
         }
       }
     }

@@ -7,23 +7,14 @@ from typing import Any
 
 from nr7101 import nr7101
 
+from .const import CORE_ENDPOINTS
+
 _LOGGER = logging.getLogger(__name__)
 
 # Bound every HTTP call. nr7101 sets no request timeouts, so a hung request
 # would otherwise pile up worker threads that share the router's one session
 # and desync its AES key (shows up as "decrypt" errors that never heal).
 REQUEST_TIMEOUT = 15
-
-_ENDPOINTS = (
-    ("cellwan_status", "cellular"),
-    ("Traffic_Status", "traffic"),
-    ("cardpage_status", "cardpage"),
-    ("lan", "lan"),
-    ("lanhosts", "lanhosts"),
-    ("wifi_easy_mesh", "wifi_mesh"),
-    ("one_connect", "one_connect"),
-    ("status", "device"),
-)
 
 
 class ZyxelAuthenticationError(Exception):
@@ -70,12 +61,13 @@ def _parse_traffic_object(obj: dict[str, Any] | None) -> dict[str, Any]:
 
 def _fetch_available_endpoints(
     router: Any,
+    endpoints: tuple[tuple[str, str], ...],
 ) -> tuple[dict[str, Any], Exception | None]:
-    """Fetch every supported endpoint once without an unbounded retry loop."""
+    """Fetch the given endpoints once without an unbounded retry loop."""
     result: dict[str, Any] = {}
     last_error: Exception | None = None
 
-    for endpoint, key in _ENDPOINTS:
+    for endpoint, key in endpoints:
         try:
             data = router.get_json_object(endpoint)
             if endpoint == "Traffic_Status":
@@ -95,14 +87,24 @@ def _fetch_available_endpoints(
     return result, last_error
 
 
-def fetch_status(router: Any) -> dict[str, Any]:
-    """Return available router data, reauthenticating once when necessary."""
+def fetch_status(
+    router: Any,
+    endpoints: tuple[tuple[str, str], ...] | None = None,
+) -> dict[str, Any]:
+    """Return available router data, reauthenticating once when necessary.
+
+    ``endpoints`` defaults to core OIDs only (enough for config-flow validation).
+    Runtime polling should pass ``endpoints_from_options(entry.options)``.
+    """
+    if endpoints is None:
+        endpoints = CORE_ENDPOINTS
+
     if not getattr(router, "sessionkey", None):
         authenticate(router)
 
     last_error: Exception | None = None
     for attempt in range(2):
-        result, last_error = _fetch_available_endpoints(router)
+        result, last_error = _fetch_available_endpoints(router, endpoints)
         if result:
             return result
 
@@ -113,3 +115,5 @@ def fetch_status(router: Any) -> dict[str, Any]:
     raise ZyxelConnectionError(
         "The router returned no supported status data"
     ) from last_error
+
+

@@ -14,14 +14,23 @@ from .api import (
 )
 from .const import (
     CONF_CONSIDER_HOME,
+    CONF_POLL_CARDPAGE,
+    CONF_POLL_ONE_CONNECT,
+    CONF_POLL_TRAFFIC,
+    CONF_POLL_WIFI_MESH,
     CONF_SCAN_INTERVAL,
     CONF_TRACK_ALL,
     DEFAULT_CONSIDER_HOME,
     DEFAULT_HOST,
+    DEFAULT_POLL_CARDPAGE,
+    DEFAULT_POLL_ONE_CONNECT,
+    DEFAULT_POLL_TRAFFIC,
+    DEFAULT_POLL_WIFI_MESH,
     DEFAULT_SCAN_INTERVAL,
     DEFAULT_TRACK_ALL,
     DEFAULT_USERNAME,
     DOMAIN,
+    MIN_SCAN_INTERVAL,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -117,7 +126,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
 
 class OptionsFlowHandler(config_entries.OptionsFlow):
-    """Handle Zyxel options: poll interval, consider-home, and track-all."""
+    """Handle Zyxel options: poll interval, tracking, and optional OID polls."""
 
     async def async_step_init(self, user_input=None):
         """Manage the options."""
@@ -130,7 +139,9 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                 vol.Optional(
                     CONF_SCAN_INTERVAL,
                     default=opts.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
-                ): vol.All(vol.Coerce(int), vol.Range(min=10, max=3600)),
+                ): vol.All(
+                    vol.Coerce(int), vol.Range(min=MIN_SCAN_INTERVAL, max=3600)
+                ),
                 vol.Optional(
                     CONF_CONSIDER_HOME,
                     default=opts.get(CONF_CONSIDER_HOME, DEFAULT_CONSIDER_HOME),
@@ -138,6 +149,22 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                 vol.Optional(
                     CONF_TRACK_ALL,
                     default=opts.get(CONF_TRACK_ALL, DEFAULT_TRACK_ALL),
+                ): bool,
+                vol.Optional(
+                    CONF_POLL_TRAFFIC,
+                    default=opts.get(CONF_POLL_TRAFFIC, DEFAULT_POLL_TRAFFIC),
+                ): bool,
+                vol.Optional(
+                    CONF_POLL_CARDPAGE,
+                    default=opts.get(CONF_POLL_CARDPAGE, DEFAULT_POLL_CARDPAGE),
+                ): bool,
+                vol.Optional(
+                    CONF_POLL_WIFI_MESH,
+                    default=opts.get(CONF_POLL_WIFI_MESH, DEFAULT_POLL_WIFI_MESH),
+                ): bool,
+                vol.Optional(
+                    CONF_POLL_ONE_CONNECT,
+                    default=opts.get(CONF_POLL_ONE_CONNECT, DEFAULT_POLL_ONE_CONNECT),
                 ): bool,
             }
         )

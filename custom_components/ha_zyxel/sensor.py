@@ -26,11 +26,11 @@ _LOGGER = logging.getLogger(__name__)
 # How far calculated boot time may drift before we accept a new value (reboot).
 _STARTUP_STABILITY_SECONDS = 30
 
-# cardpage_status / status / cellwan_status often expose the same nested objects
-# (CellIntfInfo, DeviceInfo, …). Treat those roots as one namespace for entity
-# identity so we do not create sensor.zyxel_cardpage_cellintfinfo_upstream and
-# sensor.zyxel_device_cellintfinfo_upstream for the same field.
-_DEDUP_ROOTS = frozenset({"cardpage", "device", "cellular"})
+# status / cellwan_status often expose the same nested objects (CellIntfInfo,
+# DeviceInfo, …). Treat those roots as one namespace for entity identity.
+# cardpage_status is optional and keeps its ``cardpage.`` prefix so disabling
+# that poll can remove its entities cleanly.
+_DEDUP_ROOTS = frozenset({"device", "cellular"})
 # Lower rank wins when the same relative path appears under several roots.
 _ENDPOINT_PRIORITY = {
     "cellular": 0,
@@ -290,9 +290,9 @@ def _sensor_identity(key: str) -> str:
     """Stable identity for entity unique_id / deduplication.
 
     For overlapping status dumps, drop the endpoint root so
-    ``cardpage.CellIntfInfo.Upstream`` and ``device.CellIntfInfo.Upstream``
+    ``cellular.CellIntfInfo.Upstream`` and ``device.CellIntfInfo.Upstream``
     collapse to ``CellIntfInfo.Upstream``. Other endpoints keep the full path
-    (``traffic.br0.BytesSent`` must stay distinct from ``traffic.wwan0…``).
+    (``traffic.br0.BytesSent``, ``cardpage.…``).
     """
     root, sep, rest = key.partition(".")
     if sep and root in _DEDUP_ROOTS and rest:
@@ -358,6 +358,38 @@ def _find_uptime_seconds(data: dict | None) -> int | None:
     return None
 
 
+def _find_memory_total_free(data: dict | None) -> tuple[float | None, float | None]:
+    """Return (total, free) from MemoryStatus fields in coordinator data."""
+    total: float | None = None
+    free: float | None = None
+    for key, value in _flatten_dict(data or {}).items():
+        parts = key.split(".")
+        if len(parts) < 2:
+            continue
+        if parts[-2].lower() != "memorystatus":
+            continue
+        leaf = parts[-1].lower()
+        number = _coerce_native_value(value)
+        if not isinstance(number, (int, float)):
+            continue
+        if leaf == "total":
+            total = float(number)
+        elif leaf == "free":
+            free = float(number)
+    return total, free
+
+
+def _memory_usage_percent(data: dict | None) -> float | None:
+    """Used RAM percentage from MemoryStatus Total/Free."""
+    total, free = _find_memory_total_free(data)
+    if total is None or free is None or total <= 0:
+        return None
+    used = total - free
+    if used < 0:
+        used = 0.0
+    return round(used / total * 100.0, 1)
+
+
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
@@ -376,6 +408,7 @@ async def async_setup_entry(
 
     sensors.append(ZyxelConnectedClients(coordinator, entry))
     sensors.append(ZyxelStartupTime(coordinator, entry))
+    sensors.append(ZyxelMemoryUsage(coordinator, entry))
     async_add_entities(sensors)
 
     # Per-client diagnostic sensors (signal / link rate), discovered dynamically
@@ -413,7 +446,7 @@ class AbstractZyxelSensor(CoordinatorEntity, SensorEntity):
         super().__init__(coordinator)
         self._key = key
         self._identity = _sensor_identity(key)
-        # Identity-based unique_id so cardpage/device duplicates share one entity.
+        # Identity-based unique_id so device/cellular duplicates share one entity.
         self._attr_unique_id = f"{entry.entry_id}_{self._identity}"
         self._attr_name = f"Zyxel {self._identity}"
         self._attr_device_info = DeviceInfo(
@@ -529,6 +562,44 @@ class ZyxelConnectedClients(CoordinatorEntity, SensorEntity):
     @property
     def native_value(self) -> int:
         return sum(1 for h in lan_hosts(self.coordinator).values() if h.get("Active"))
+
+
+class ZyxelMemoryUsage(CoordinatorEntity, SensorEntity):
+    """RAM used % derived from MemoryStatus.Total and MemoryStatus.Free."""
+
+    _attr_name = "Memory Usage"
+    _attr_icon = "mdi:memory"
+    _attr_native_unit_of_measurement = "%"
+    _attr_state_class = SensorStateClass.MEASUREMENT
+
+    def __init__(self, coordinator, entry: ConfigEntry) -> None:
+        super().__init__(coordinator)
+        self._attr_unique_id = f"{entry.entry_id}_memory_usage"
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, entry.entry_id)},
+            name=f"Zyxel ({entry.data['host']})",
+            manufacturer="Zyxel",
+        )
+
+    @property
+    def available(self) -> bool:
+        if not self.coordinator.last_update_success:
+            return False
+        return _memory_usage_percent(self.coordinator.data) is not None
+
+    @property
+    def native_value(self) -> float | None:
+        return _memory_usage_percent(self.coordinator.data)
+
+    @property
+    def extra_state_attributes(self) -> dict[str, float | None]:
+        total, free = _find_memory_total_free(self.coordinator.data)
+        used = (total - free) if total is not None and free is not None else None
+        return {
+            "total_kb": total,
+            "free_kb": free,
+            "used_kb": used,
+        }
 
 
 class ZyxelStartupTime(CoordinatorEntity, SensorEntity):

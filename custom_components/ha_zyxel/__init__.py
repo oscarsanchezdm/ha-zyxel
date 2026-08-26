@@ -16,6 +16,10 @@ from custom_components.ha_zyxel.const import (
     CONF_USERNAME,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
+    endpoints_from_options,
+)
+from custom_components.ha_zyxel.entity_cleanup import (
+    async_cleanup_disabled_endpoint_entities,
 )
 from custom_components.ha_zyxel.services import async_setup_services, async_unload_services
 from custom_components.ha_zyxel.sms_client import ZyxelSmsClient
@@ -44,6 +48,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         raise ConfigEntryNotReady from ex
 
     scan_interval = entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+    endpoints = endpoints_from_options(entry.options)
     sms_client = ZyxelSmsClient(host, username, password)
 
     hass.data.setdefault(DOMAIN, {})
@@ -57,12 +62,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         """Fetch router data; recreate the session once on failure (self-heal)."""
         client = entry_data["router"]
         try:
-            return fetch_status(client)
+            return fetch_status(client, endpoints)
         except Exception as err:  # noqa: BLE001 - desync/timeout/etc.
             _LOGGER.debug("Zyxel fetch failed, recreating session: %s", err)
             client = create_router(host, username, password)
             entry_data["router"] = client
-            return fetch_status(client)
+            return fetch_status(client, endpoints)
 
     async def async_update_data():
         # No asyncio timeout wrapper: each HTTP call is bounded by REQUEST_TIMEOUT
@@ -89,13 +94,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     entry.async_on_unload(entry.add_update_listener(_async_update_listener))
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    async_cleanup_disabled_endpoint_entities(hass, entry)
     async_setup_services(hass)
 
     return True
 
 
 async def _async_update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
-    """Reload the entry when its options change (scan interval, etc.)."""
+    """Reload the entry when its options change (poll interval, OID toggles, etc.)."""
     await hass.config_entries.async_reload(entry.entry_id)
 
 

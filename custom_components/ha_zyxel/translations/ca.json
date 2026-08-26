@@ -1,0 +1,46 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "host": "Amfitrió",
+          "username": "Nom d'usuari (normalment 'admin')",
+          "password": "Contrasenya"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "No s'ha pogut connectar",
+      "invalid_auth": "Autenticació no vàlida",
+      "unknown": "Error inesperat"
+    },
+    "abort": {
+      "already_configured": "El dispositiu ja està configurat"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opcions Zyxel",
+        "data": {
+          "scan_interval": "Interval de consulta (segons)",
+          "consider_home": "Considerar a casa (segons)",
+          "track_all": "Seguir tots els dispositius descoberts",
+          "poll_traffic": "Consultar Traffic_Status",
+          "poll_cardpage": "Consultar cardpage_status",
+          "poll_wifi_mesh": "Consultar Wi‑Fi EasyMesh",
+          "poll_one_connect": "Consultar One Connect"
+        },
+        "data_description": {
+          "scan_interval": "Cada quant es consulta el router (20-3600 s). Cada OID activat és una petició HTTPS; millor ≥60 s en CPEs cel·lulars petits.",
+          "consider_home": "Temps que un dispositiu pot estar invisible abans de marcar-se com a fora.",
+          "track_all": "Desactivat: només clients ja coneguts a Home Assistant (o ja seguits) tenen entitats. Activat: s'afegeix cada client LAN que reporti el router.",
+          "poll_traffic": "OID extra per a comptadors de trànsit. Desactivat per defecte. Si el desactives, s'esborren els sensors relacionats.",
+          "poll_cardpage": "OID extra amb camps de la pàgina d'estat. Desactivat per defecte. Si el desactives, s'esborren els sensors relacionats.",
+          "poll_wifi_mesh": "OID extra d'EasyMesh. Desactivat per defecte. Si el desactives, s'esborren els sensors relacionats.",
+          "poll_one_connect": "OID extra d'One Connect. Desactivat per defecte. Si el desactives, s'esborren els sensors relacionats."
+        }
+      }
+    }
+  }
+}

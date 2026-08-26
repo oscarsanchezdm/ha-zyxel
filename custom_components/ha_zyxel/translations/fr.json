@@ -4,18 +4,18 @@
       "user": {
         "data": {
           "host": "Hôte",
-          "username": "Nom d'utilisateur (habituellement 'admin')",
+          "username": "Nom d'utilisateur (généralement 'admin')",
           "password": "Mot de passe"
         }
       }
     },
     "error": {
-      "cannot_connect": "La connexion a échoué",
-      "invalid_auth": "L'authentification a échoué",
-      "unknown": "Une erreur inattendue s'est produite"
+      "cannot_connect": "Échec de la connexion",
+      "invalid_auth": "Authentification invalide",
+      "unknown": "Erreur inattendue"
     },
     "abort": {
-      "already_configured": "L'appareil est déjà configuré"
+      "already_configured": "Appareil déjà configuré"
     }
   },
   "options": {
@@ -25,12 +25,20 @@
         "data": {
           "scan_interval": "Intervalle de scan (secondes)",
           "consider_home": "Considérer à la maison (secondes)",
-          "track_all": "Suivre tous les appareils découverts"
+          "track_all": "Suivre tous les appareils découverts",
+          "poll_traffic": "Interroger Traffic_Status",
+          "poll_cardpage": "Interroger cardpage_status",
+          "poll_wifi_mesh": "Interroger Wi‑Fi EasyMesh",
+          "poll_one_connect": "Interroger One Connect"
         },
         "data_description": {
-          "scan_interval": "Fréquence d'interrogation du routeur pour les appareils connectés (10-3600).",
+          "scan_interval": "Fréquence d'interrogation (20-3600s). Chaque OID activé est une requête HTTPS ; gardez ≥60s sur les petits routeurs cellulaires.",
           "consider_home": "Durée pendant laquelle un appareil peut être invisible avant d'être marqué absent.",
-          "track_all": "Désactivé : seuls les clients déjà connus de Home Assistant (ou déjà suivis) obtiennent des entités. Activé : chaque client LAN signalé par le routeur est ajouté."
+          "track_all": "Désactivé : seuls les clients déjà connus de Home Assistant (ou déjà suivis) obtiennent des entités. Activé : chaque client LAN signalé par le routeur est ajouté.",
+          "poll_traffic": "OID supplémentaire pour les compteurs de trafic. Désactivé par défaut. Le désactiver supprime les capteurs associés.",
+          "poll_cardpage": "OID supplémentaire pour les champs de la page d'accueil. Désactivé par défaut. Le désactiver supprime les capteurs associés.",
+          "poll_wifi_mesh": "OID supplémentaire EasyMesh. Désactivé par défaut. Le désactiver supprime les capteurs associés.",
+          "poll_one_connect": "OID supplémentaire One Connect. Désactivé par défaut. Le désactiver supprime les capteurs associés."
         }
       }
     }
