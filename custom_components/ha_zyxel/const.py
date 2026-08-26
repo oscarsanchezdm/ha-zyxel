@@ -24,25 +24,29 @@ DEFAULT_CONSIDER_HOME = 300
 DEFAULT_TRACK_ALL = False
 
 # Optional OID polls (each is an extra HTTPS/AES round-trip). Off by default.
+CONF_POLL_CELLWAN = "poll_cellwan"
+CONF_POLL_LAN = "poll_lan"
 CONF_POLL_TRAFFIC = "poll_traffic"
 CONF_POLL_CARDPAGE = "poll_cardpage"
 CONF_POLL_WIFI_MESH = "poll_wifi_mesh"
 CONF_POLL_ONE_CONNECT = "poll_one_connect"
+DEFAULT_POLL_CELLWAN = False
+DEFAULT_POLL_LAN = False
 DEFAULT_POLL_TRAFFIC = False
 DEFAULT_POLL_CARDPAGE = False
 DEFAULT_POLL_WIFI_MESH = False
 DEFAULT_POLL_ONE_CONNECT = False
 
-# Always fetched: status, cellular, LAN hosts, LAN config.
+# Always fetched: device status + LAN hosts (presence / clients).
 CORE_ENDPOINTS: tuple[tuple[str, str], ...] = (
     ("status", "device"),
-    ("cellwan_status", "cellular"),
     ("lanhosts", "lanhosts"),
-    ("lan", "lan"),
 )
 
 # option key -> (OID path, coordinator data key)
 OPTIONAL_ENDPOINTS: dict[str, tuple[str, str]] = {
+    CONF_POLL_CELLWAN: ("cellwan_status", "cellular"),
+    CONF_POLL_LAN: ("lan", "lan"),
     CONF_POLL_TRAFFIC: ("Traffic_Status", "traffic"),
     CONF_POLL_CARDPAGE: ("cardpage_status", "cardpage"),
     CONF_POLL_WIFI_MESH: ("wifi_easy_mesh", "wifi_mesh"),
@@ -50,6 +54,8 @@ OPTIONAL_ENDPOINTS: dict[str, tuple[str, str]] = {
 }
 
 OPTIONAL_POLL_DEFAULTS: dict[str, bool] = {
+    CONF_POLL_CELLWAN: DEFAULT_POLL_CELLWAN,
+    CONF_POLL_LAN: DEFAULT_POLL_LAN,
     CONF_POLL_TRAFFIC: DEFAULT_POLL_TRAFFIC,
     CONF_POLL_CARDPAGE: DEFAULT_POLL_CARDPAGE,
     CONF_POLL_WIFI_MESH: DEFAULT_POLL_WIFI_MESH,

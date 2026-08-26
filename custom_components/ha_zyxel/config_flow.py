@@ -15,6 +15,8 @@ from .api import (
 from .const import (
     CONF_CONSIDER_HOME,
     CONF_POLL_CARDPAGE,
+    CONF_POLL_CELLWAN,
+    CONF_POLL_LAN,
     CONF_POLL_ONE_CONNECT,
     CONF_POLL_TRAFFIC,
     CONF_POLL_WIFI_MESH,
@@ -23,6 +25,8 @@ from .const import (
     DEFAULT_CONSIDER_HOME,
     DEFAULT_HOST,
     DEFAULT_POLL_CARDPAGE,
+    DEFAULT_POLL_CELLWAN,
+    DEFAULT_POLL_LAN,
     DEFAULT_POLL_ONE_CONNECT,
     DEFAULT_POLL_TRAFFIC,
     DEFAULT_POLL_WIFI_MESH,
@@ -149,6 +153,14 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                 vol.Optional(
                     CONF_TRACK_ALL,
                     default=opts.get(CONF_TRACK_ALL, DEFAULT_TRACK_ALL),
+                ): bool,
+                vol.Optional(
+                    CONF_POLL_CELLWAN,
+                    default=opts.get(CONF_POLL_CELLWAN, DEFAULT_POLL_CELLWAN),
+                ): bool,
+                vol.Optional(
+                    CONF_POLL_LAN,
+                    default=opts.get(CONF_POLL_LAN, DEFAULT_POLL_LAN),
                 ): bool,
                 vol.Optional(
                     CONF_POLL_TRAFFIC,

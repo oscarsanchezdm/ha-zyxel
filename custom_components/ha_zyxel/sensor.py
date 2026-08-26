@@ -26,11 +26,10 @@ _LOGGER = logging.getLogger(__name__)
 # How far calculated boot time may drift before we accept a new value (reboot).
 _STARTUP_STABILITY_SECONDS = 30
 
-# status / cellwan_status often expose the same nested objects (CellIntfInfo,
-# DeviceInfo, …). Treat those roots as one namespace for entity identity.
-# cardpage_status is optional and keeps its ``cardpage.`` prefix so disabling
-# that poll can remove its entities cleanly.
-_DEDUP_ROOTS = frozenset({"device", "cellular"})
+# Only collapse duplicate paths under ``device`` (status). Optional endpoints
+# keep their root in the unique_id (``cellular.…``, ``cardpage.…``, …) so
+# disabling a poll can remove related entities cleanly.
+_DEDUP_ROOTS = frozenset({"device"})
 # Lower rank wins when the same relative path appears under several roots.
 _ENDPOINT_PRIORITY = {
     "cellular": 0,
@@ -289,10 +288,9 @@ def _coerce_native_value(value: Any) -> Any:
 def _sensor_identity(key: str) -> str:
     """Stable identity for entity unique_id / deduplication.
 
-    For overlapping status dumps, drop the endpoint root so
-    ``cellular.CellIntfInfo.Upstream`` and ``device.CellIntfInfo.Upstream``
-    collapse to ``CellIntfInfo.Upstream``. Other endpoints keep the full path
-    (``traffic.br0.BytesSent``, ``cardpage.…``).
+    For ``device.*`` paths, drop the root so nested fields stay stable.
+    Other endpoints keep the full path (``cellular.INTF_RSSI``,
+    ``traffic.br0.BytesSent``, ``cardpage.…``).
     """
     root, sep, rest = key.partition(".")
     if sep and root in _DEDUP_ROOTS and rest:
@@ -301,7 +299,7 @@ def _sensor_identity(key: str) -> str:
 
 
 def _endpoint_rank(key: str) -> int:
-    """Prefer cellular > device > cardpage when picking a duplicate's source."""
+    """Prefer cellular over device when the same relative path appears."""
     return _ENDPOINT_PRIORITY.get(key.split(".", 1)[0], 99)
 
 
