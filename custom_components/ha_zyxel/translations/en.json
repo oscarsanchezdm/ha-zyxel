@@ -980,28 +980,28 @@
         "name": "DHCP: Subnet mask"
       },
       "f_dhcp4serpoolinfo_userclassid": {
-        "name": "DHCP: User Class ID"
+        "name": "DHCP: User class ID"
       },
       "f_dhcp4serpoolinfo_vendorclassid": {
-        "name": "DHCP: Vendor Class ID"
+        "name": "DHCP: Vendor class ID"
       },
       "f_dhcp4serpoolinfo_vendorclassidexclude": {
-        "name": "DHCP: Vendor Class IDExclude"
+        "name": "DHCP: Vendor class ID exclude"
       },
       "f_dhcp4serpoolinfo_vendorclassidmode": {
-        "name": "DHCP: Vendor Class IDMode"
+        "name": "DHCP: Vendor class ID mode"
       },
       "f_dhcp4serpoolinfo_x_zyxel_autoreservelanip": {
-        "name": "DHCP: Auto Reserve Lan Ip"
+        "name": "DHCP: Auto-reserve LAN IP"
       },
       "f_dhcp4serpoolinfo_x_zyxel_dns_type": {
-        "name": "DHCP: DNS Type"
+        "name": "DHCP: DNS type"
       },
       "f_dhcp4serpoolinfo_x_zyxel_stb_prcode": {
-        "name": "DHCP: STB Pr Code"
+        "name": "DHCP: STB provision code"
       },
       "f_dhcp4serpoolinfo_x_zyxel_stb_prcode_subcode": {
-        "name": "DHCP: STB Pr Code subcode"
+        "name": "DHCP: STB provision subcode"
       },
       "f_dhcp4serpoolinfo_x_zyxel_stb_url": {
         "name": "DHCP: STB URL"
@@ -1010,13 +1010,13 @@
         "name": "DHCP: STB URL subcode"
       },
       "f_dhcp4serpoolinfo_x_zyxel_stb_vendorid": {
-        "name": "DHCP: STB VENDORID"
+        "name": "DHCP: STB vendor ID"
       },
       "f_dhcp4serpoolinfo_x_zyxel_serverconfigurable": {
-        "name": "DHCP: Server Configurable"
+        "name": "DHCP: Server configurable"
       },
       "f_dhcp4serpoolinfo_x_zyxel_setenable": {
-        "name": "DHCP: Set Enable"
+        "name": "DHCP: Set enable"
       },
       "f_enablealias": {
         "name": "Enable Alias"

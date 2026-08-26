@@ -544,11 +544,14 @@ class AbstractZyxelSensor(CoordinatorEntity, SensorEntity):
         self._identity = _sensor_identity(key)
         # Identity-based unique_id so device/cellular duplicates share one entity.
         self._attr_unique_id = f"{entry.entry_id}_{self._identity}"
+        # Always set an English fallback name. Disabled entities (and registry
+        # rows created before translations) otherwise keep the raw
+        # ``Zyxel Dhcp4SerPoolInfo.…`` original_name when translation_key alone
+        # does not resolve yet.
+        self._attr_name = friendly_fallback_name(self._identity)
         translation_key = field_translation_key(self._identity)
         if translation_key in KNOWN_TRANSLATION_KEYS:
             self._attr_translation_key = translation_key
-        else:
-            self._attr_name = friendly_fallback_name(self._identity)
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, entry.entry_id)},
             name=f"Zyxel ({entry.data['host']})",

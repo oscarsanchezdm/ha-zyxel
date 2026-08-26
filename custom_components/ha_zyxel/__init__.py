@@ -20,6 +20,7 @@ from custom_components.ha_zyxel.const import (
 )
 from custom_components.ha_zyxel.entity_cleanup import (
     async_cleanup_disabled_endpoint_entities,
+    async_purge_stale_raw_api_names,
 )
 from custom_components.ha_zyxel.services import async_setup_services, async_unload_services
 from custom_components.ha_zyxel.sms_client import ZyxelSmsClient
@@ -92,6 +93,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     entry_data["coordinator"] = coordinator
 
     entry.async_on_unload(entry.add_update_listener(_async_update_listener))
+
+    # Recreate sensors still stuck with pre-translation ``Zyxel Api.Path`` names.
+    async_purge_stale_raw_api_names(hass, entry)
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     async_cleanup_disabled_endpoint_entities(hass, entry)

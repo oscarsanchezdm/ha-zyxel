@@ -36,6 +36,46 @@ def _suffix_belongs_to_disabled_root(suffix: str, disabled: frozenset[str]) -> b
     return False
 
 
+def async_purge_stale_raw_api_names(hass: HomeAssistant, entry: ConfigEntry) -> int:
+    """Drop registry rows still labelled ``Zyxel <api.path>``.
+
+    Those names come from the pre-translation ``_attr_name`` format. Disabled
+    sensors often keep that ``original_name`` forever because they are rarely
+    reloaded with a live translated Entity. Removing the row lets setup
+    recreate them with friendly / translated names.
+    """
+    registry = er.async_get(hass)
+    prefix = f"{entry.entry_id}_"
+    removed = 0
+
+    for entity_entry in list(
+        er.async_entries_for_config_entry(registry, entry.entry_id)
+    ):
+        uid = entity_entry.unique_id or ""
+        if not uid.startswith(prefix):
+            continue
+        if entity_entry.domain != "sensor":
+            continue
+        # Leave user-renamed entities alone.
+        if entity_entry.name:
+            continue
+
+        suffix = uid[len(prefix) :]
+        original = entity_entry.original_name or ""
+        if original != f"Zyxel {suffix}":
+            continue
+
+        registry.async_remove(entity_entry.entity_id)
+        removed += 1
+
+    if removed:
+        _LOGGER.info(
+            "Removed %s Zyxel sensor(s) with stale raw API names for re-creation",
+            removed,
+        )
+    return removed
+
+
 def async_cleanup_disabled_endpoint_entities(
     hass: HomeAssistant, entry: ConfigEntry
 ) -> None:
