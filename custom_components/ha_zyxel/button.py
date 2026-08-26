@@ -23,6 +23,10 @@ async def async_setup_entry(
 class ZyxelRebootButton(ButtonEntity):
     """Representation of a Zyxel reboot button."""
 
+    _attr_has_entity_name = True
+    _attr_translation_key = "reboot"
+    _attr_icon = "mdi:restart"
+
     def __init__(self, entry: ConfigEntry, router) -> None:
         """Initialize the button."""
         self._router = router
@@ -33,8 +37,6 @@ class ZyxelRebootButton(ButtonEntity):
             manufacturer="Zyxel",
             model="",
         )
-        self._attr_icon = "mdi:restart"
-        self._attr_name = "Zyxel Reboot Device"
 
     async def async_press(self) -> None:
         """Handle the button press."""

@@ -49,7 +49,7 @@ class ZyxelConnectivitySensor(CoordinatorEntity, BinarySensorEntity):
     """Instant online/offline for one LAN host (no consider-home debounce)."""
 
     _attr_has_entity_name = True
-    _attr_name = "Connected"
+    _attr_translation_key = "connected"
     _attr_device_class = BinarySensorDeviceClass.CONNECTIVITY
     # Secondary/opt-in entity so it doesn't double the entity count by default.
     _attr_entity_registry_enabled_default = False

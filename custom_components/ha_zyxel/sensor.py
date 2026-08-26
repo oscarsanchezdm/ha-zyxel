@@ -19,6 +19,11 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from custom_components.ha_zyxel.const import CONF_TRACK_ALL, DEFAULT_TRACK_ALL, DOMAIN
+from custom_components.ha_zyxel.entity_names import (
+    KNOWN_TRANSLATION_KEYS,
+    field_translation_key,
+    friendly_fallback_name,
+)
 from custom_components.ha_zyxel.helpers import lan_hosts, trackable_macs
 
 _LOGGER = logging.getLogger(__name__)
@@ -64,6 +69,14 @@ KNOWN_SENSORS = {
         "device_class": SensorDeviceClass.SIGNAL_STRENGTH,
         "state_class": SensorStateClass.MEASUREMENT,
     },
+    # CellIntfInfo.* leaf aliases (same metrics, different API path).
+    "RSSI": {
+        "name": "Cellular RSSI",
+        "unit": "dBm",
+        "icon": "mdi:signal",
+        "device_class": SensorDeviceClass.SIGNAL_STRENGTH,
+        "state_class": SensorStateClass.MEASUREMENT,
+    },
     "INTF_PhyCell_ID": {
         "name": "Physical Cell ID",
         "unit": None,
@@ -72,49 +85,119 @@ KNOWN_SENSORS = {
         "state_class": None,
     },
     "INTF_RSRP": {
-        "name": "Cellular Reference Signal Received Power",
+        "name": "Cellular RSRP",
+        "unit": "dBm",
+        "icon": "mdi:signal",
+        "device_class": SensorDeviceClass.SIGNAL_STRENGTH,
+        "state_class": SensorStateClass.MEASUREMENT,
+    },
+    "X_ZYXEL_RSRP": {
+        "name": "Cellular RSRP",
+        "unit": "dBm",
+        "icon": "mdi:signal",
+        "device_class": SensorDeviceClass.SIGNAL_STRENGTH,
+        "state_class": SensorStateClass.MEASUREMENT,
+    },
+    "RSRP": {
+        "name": "Cellular RSRP",
         "unit": "dBm",
         "icon": "mdi:signal",
         "device_class": SensorDeviceClass.SIGNAL_STRENGTH,
         "state_class": SensorStateClass.MEASUREMENT,
     },
     "INTF_RSRQ": {
-        "name": "Cellular Reference Signal Received Quality",
+        "name": "Cellular RSRQ",
+        "unit": "dB",
+        "icon": "mdi:signal",
+        "device_class": SensorDeviceClass.SIGNAL_STRENGTH,
+        "state_class": SensorStateClass.MEASUREMENT,
+    },
+    "X_ZYXEL_RSRQ": {
+        "name": "Cellular RSRQ",
+        "unit": "dB",
+        "icon": "mdi:signal",
+        "device_class": SensorDeviceClass.SIGNAL_STRENGTH,
+        "state_class": SensorStateClass.MEASUREMENT,
+    },
+    "RSRQ": {
+        "name": "Cellular RSRQ",
         "unit": "dB",
         "icon": "mdi:signal",
         "device_class": SensorDeviceClass.SIGNAL_STRENGTH,
         "state_class": SensorStateClass.MEASUREMENT,
     },
     "INTF_SINR": {
-        "name": "Cellular Signal-to-Noise Ratio",
+        "name": "Cellular SINR",
+        "unit": "dB",
+        "icon": "mdi:signal",
+        "device_class": SensorDeviceClass.SIGNAL_STRENGTH,
+        "state_class": SensorStateClass.MEASUREMENT,
+    },
+    "X_ZYXEL_SINR": {
+        "name": "Cellular SINR",
+        "unit": "dB",
+        "icon": "mdi:signal",
+        "device_class": SensorDeviceClass.SIGNAL_STRENGTH,
+        "state_class": SensorStateClass.MEASUREMENT,
+    },
+    "SINR": {
+        "name": "Cellular SINR",
         "unit": "dB",
         "icon": "mdi:signal",
         "device_class": SensorDeviceClass.SIGNAL_STRENGTH,
         "state_class": SensorStateClass.MEASUREMENT,
     },
     "INTF_MCS": {
-        "name": "Cellular Modulation and Coding Scheme",
+        "name": "Cellular MCS",
+        "unit": "",
+        "icon": "mdi:signal",
+        "device_class": None,
+        "state_class": SensorStateClass.MEASUREMENT,
+    },
+    "X_ZYXEL_MCS": {
+        "name": "Cellular MCS",
         "unit": "",
         "icon": "mdi:signal",
         "device_class": None,
         "state_class": SensorStateClass.MEASUREMENT,
     },
     "INTF_CQI": {
-        "name": "Cellular Channel Quality Indicator",
+        "name": "Cellular CQI",
+        "unit": "",
+        "icon": "mdi:signal",
+        "device_class": None,
+        "state_class": SensorStateClass.MEASUREMENT,
+    },
+    "X_ZYXEL_CQI": {
+        "name": "Cellular CQI",
         "unit": "",
         "icon": "mdi:signal",
         "device_class": None,
         "state_class": SensorStateClass.MEASUREMENT,
     },
     "INTF_RI": {
-        "name": "Cellular Rank Indicator",
+        "name": "Cellular RI",
+        "unit": "",
+        "icon": "mdi:signal",
+        "device_class": None,
+        "state_class": SensorStateClass.MEASUREMENT,
+    },
+    "X_ZYXEL_RI": {
+        "name": "Cellular RI",
         "unit": "",
         "icon": "mdi:signal",
         "device_class": None,
         "state_class": SensorStateClass.MEASUREMENT,
     },
     "INTF_PMI": {
-        "name": "Cellular Precoding Matrix Indicator",
+        "name": "Cellular PMI",
+        "unit": "",
+        "icon": "mdi:signal",
+        "device_class": None,
+        "state_class": SensorStateClass.MEASUREMENT,
+    },
+    "X_ZYXEL_PMI": {
+        "name": "Cellular PMI",
         "unit": "",
         "icon": "mdi:signal",
         "device_class": None,
@@ -127,33 +210,47 @@ KNOWN_SENSORS = {
         "device_class": None,
         "state_class": None,
     },
+    "PhyCellID": {
+        "name": "Physical Cell ID",
+        "unit": None,
+        "icon": "mdi:antenna",
+        "device_class": None,
+        "state_class": None,
+    },
+    "X_ZYXEL_PhyCellID": {
+        "name": "Physical Cell ID",
+        "unit": None,
+        "icon": "mdi:antenna",
+        "device_class": None,
+        "state_class": None,
+    },
     "NSA_RSRP": {
-        "name": "NSA Reference Signal Received Power",
+        "name": "NSA RSRP",
         "unit": "dBm",
         "icon": "mdi:signal",
         "device_class": SensorDeviceClass.SIGNAL_STRENGTH,
-        "state_class": SensorStateClass.MEASUREMENT
+        "state_class": SensorStateClass.MEASUREMENT,
     },
     "NSA_RSRQ": {
-        "name": "NSA Reference Signal Received Quality",
+        "name": "NSA RSRQ",
         "unit": "dB",
         "icon": "mdi:signal",
         "device_class": SensorDeviceClass.SIGNAL_STRENGTH,
-        "state_class": SensorStateClass.MEASUREMENT
+        "state_class": SensorStateClass.MEASUREMENT,
     },
     "NSA_RSSI": {
-        "name": "NSA Reference Signal Strength Indicator",
+        "name": "NSA RSSI",
         "unit": "dBm",
         "icon": "mdi:signal",
         "device_class": SensorDeviceClass.SIGNAL_STRENGTH,
-        "state_class": SensorStateClass.MEASUREMENT
+        "state_class": SensorStateClass.MEASUREMENT,
     },
     "NSA_SINR": {
-        "name": "NSA Signal-to-Noise Ratio",
+        "name": "NSA SINR",
         "unit": "dB",
         "icon": "mdi:signal",
         "device_class": SensorDeviceClass.SIGNAL_STRENGTH,
-        "state_class": SensorStateClass.MEASUREMENT
+        "state_class": SensorStateClass.MEASUREMENT,
     },
     "X_ZYXEL_TEMPERATURE_AMBIENT": {
         "name": "Ambient Temperature",
@@ -436,6 +533,7 @@ class AbstractZyxelSensor(CoordinatorEntity, SensorEntity):
 
     # Auto-generated router telemetry: diagnostic and off by default — a full
     # status dump creates a long tail of entities.
+    _attr_has_entity_name = True
     _attr_entity_category = EntityCategory.DIAGNOSTIC
     _attr_entity_registry_enabled_default = False
 
@@ -446,7 +544,11 @@ class AbstractZyxelSensor(CoordinatorEntity, SensorEntity):
         self._identity = _sensor_identity(key)
         # Identity-based unique_id so device/cellular duplicates share one entity.
         self._attr_unique_id = f"{entry.entry_id}_{self._identity}"
-        self._attr_name = f"Zyxel {self._identity}"
+        translation_key = field_translation_key(self._identity)
+        if translation_key in KNOWN_TRANSLATION_KEYS:
+            self._attr_translation_key = translation_key
+        else:
+            self._attr_name = friendly_fallback_name(self._identity)
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, entry.entry_id)},
             name=f"Zyxel ({entry.data['host']})",
@@ -544,8 +646,9 @@ class GenericZyxelSensor(AbstractZyxelSensor):
 class ZyxelConnectedClients(CoordinatorEntity, SensorEntity):
     """Number of devices currently connected to the router."""
 
+    _attr_has_entity_name = True
+    _attr_translation_key = "connected_devices"
     _attr_icon = "mdi:lan-connect"
-    _attr_name = "Connected devices"
     _attr_state_class = SensorStateClass.MEASUREMENT
 
     def __init__(self, coordinator, entry: ConfigEntry):
@@ -565,7 +668,8 @@ class ZyxelConnectedClients(CoordinatorEntity, SensorEntity):
 class ZyxelMemoryUsage(CoordinatorEntity, SensorEntity):
     """RAM used % derived from MemoryStatus.Total and MemoryStatus.Free."""
 
-    _attr_name = "Memory Usage"
+    _attr_has_entity_name = True
+    _attr_translation_key = "memory_usage"
     _attr_icon = "mdi:memory"
     _attr_native_unit_of_measurement = "%"
     _attr_state_class = SensorStateClass.MEASUREMENT
@@ -604,7 +708,8 @@ class ZyxelMemoryUsage(CoordinatorEntity, SensorEntity):
 class ZyxelStartupTime(CoordinatorEntity, SensorEntity):
     """Boot timestamp derived from uptime; stable across poll jitter."""
 
-    _attr_name = "Startup time"
+    _attr_has_entity_name = True
+    _attr_translation_key = "startup_time"
     _attr_icon = "mdi:clock-start"
     _attr_device_class = SensorDeviceClass.TIMESTAMP
     _attr_entity_category = EntityCategory.DIAGNOSTIC
@@ -685,52 +790,53 @@ def _kbps_to_mbps(value):
 
 
 # Per-client diagnostic sensors, one entity each. All disabled by default; enable
-# the ones you want per device. "id" is stable — it forms the entity unique_id.
+# the ones you want per device. "id" is stable — it forms the entity unique_id
+# and the translation_key.
 CLIENT_SENSOR_SPECS: list[dict] = [
-    {"id": "rssi", "name": "Signal strength", "device_class": SensorDeviceClass.SIGNAL_STRENGTH,
+    {"id": "rssi", "device_class": SensorDeviceClass.SIGNAL_STRENGTH,
      "unit": "dBm", "state_class": SensorStateClass.MEASUREMENT,
      "fn": _wifi_only(lambda h: _nz(h.get("X_ZYXEL_RSSI")))},
-    {"id": "snr", "name": "Signal-to-noise ratio", "unit": "dB", "icon": "mdi:signal",
+    {"id": "snr", "unit": "dB", "icon": "mdi:signal",
      "state_class": SensorStateClass.MEASUREMENT,
      "fn": _wifi_only(lambda h: _nz(h.get("X_ZYXEL_SNR")))},
-    {"id": "signal_quality", "name": "Signal quality", "unit": "%", "icon": "mdi:signal",
+    {"id": "signal_quality", "unit": "%", "icon": "mdi:signal",
      "state_class": SensorStateClass.MEASUREMENT,
      "fn": _wifi_only(lambda h: _nz(h.get("X_ZYXEL_SignalStrength")))},
-    {"id": "link_rate", "name": "Link rate", "device_class": SensorDeviceClass.DATA_RATE,
+    {"id": "link_rate", "device_class": SensorDeviceClass.DATA_RATE,
      "unit": "Mbit/s", "state_class": SensorStateClass.MEASUREMENT,
      "fn": lambda h: h.get("X_ZYXEL_PhyRate")},
-    {"id": "downlink_rate", "name": "Downlink rate", "device_class": SensorDeviceClass.DATA_RATE,
+    {"id": "downlink_rate", "device_class": SensorDeviceClass.DATA_RATE,
      "unit": "Mbit/s", "state_class": SensorStateClass.MEASUREMENT,
      "fn": lambda h: _kbps_to_mbps(h.get("X_ZYXEL_LastDataDownlinkRate"))},
-    {"id": "uplink_rate", "name": "Uplink rate", "device_class": SensorDeviceClass.DATA_RATE,
+    {"id": "uplink_rate", "device_class": SensorDeviceClass.DATA_RATE,
      "unit": "Mbit/s", "state_class": SensorStateClass.MEASUREMENT,
      "fn": lambda h: _kbps_to_mbps(h.get("X_ZYXEL_LastDataUplinkRate"))},
-    {"id": "bytes_received", "name": "Bytes received", "device_class": SensorDeviceClass.DATA_SIZE,
+    {"id": "bytes_received", "device_class": SensorDeviceClass.DATA_SIZE,
      "unit": "B", "state_class": SensorStateClass.TOTAL_INCREASING,
      "fn": lambda h: h.get("X_ZYXEL_BytesReceived")},
-    {"id": "bytes_sent", "name": "Bytes sent", "device_class": SensorDeviceClass.DATA_SIZE,
+    {"id": "bytes_sent", "device_class": SensorDeviceClass.DATA_SIZE,
      "unit": "B", "state_class": SensorStateClass.TOTAL_INCREASING,
      "fn": lambda h: h.get("X_ZYXEL_BytesSent")},
-    {"id": "connected_duration", "name": "Connected duration",
+    {"id": "connected_duration",
      "device_class": SensorDeviceClass.DURATION, "unit": "s",
      "state_class": SensorStateClass.MEASUREMENT,
      "fn": lambda h: h.get("X_ZYXEL_Duration")},
-    {"id": "ip_address", "name": "IP address", "icon": "mdi:ip-network",
+    {"id": "ip_address", "icon": "mdi:ip-network",
      "fn": lambda h: h.get("IPAddress") or None},
-    {"id": "ssid", "name": "SSID", "icon": "mdi:wifi",
+    {"id": "ssid", "icon": "mdi:wifi",
      "fn": _wifi_only(lambda h: h.get("WiFiname") or None)},
-    {"id": "band", "name": "Band", "icon": "mdi:wifi",
+    {"id": "band", "icon": "mdi:wifi",
      "fn": _wifi_only(lambda h: h.get("SupportedFrequencyBands") or None)},
-    {"id": "network", "name": "Network", "icon": "mdi:wifi-cog",
+    {"id": "network", "icon": "mdi:wifi-cog",
      "fn": _wifi_only(lambda h: ("main" if h.get("X_ZYXEL_MainSSID") else "guest")
                       if "X_ZYXEL_MainSSID" in h else None)},
-    {"id": "wifi_standard", "name": "Wi-Fi standard", "icon": "mdi:wifi",
+    {"id": "wifi_standard", "icon": "mdi:wifi",
      "fn": _wifi_only(lambda h: h.get("X_ZYXEL_OperatingStandard") or None)},
-    {"id": "connection_type", "name": "Connection type", "icon": "mdi:lan",
+    {"id": "connection_type", "icon": "mdi:lan",
      "fn": lambda h: ("wifi" if _is_wifi(h) else ("ethernet" if h.get("Layer1Interface") else None))},
-    {"id": "device_type", "name": "Device type", "icon": "mdi:devices",
+    {"id": "device_type", "icon": "mdi:devices",
      "fn": lambda h: h.get("X_ZYXEL_HostType") or None},
-    {"id": "address_source", "name": "Address source", "icon": "mdi:ip",
+    {"id": "address_source", "icon": "mdi:ip",
      "fn": lambda h: h.get("AddressSource") or None},
 ]
 
@@ -742,7 +848,7 @@ class ZyxelClientAttrSensor(_ZyxelClientSensor):
         super().__init__(coordinator, mac)
         self._value_fn = spec["fn"]
         self._attr_unique_id = f"{mac}_{spec['id']}"
-        self._attr_name = spec["name"]
+        self._attr_translation_key = spec["id"]
         if spec.get("device_class"):
             self._attr_device_class = spec["device_class"]
         if spec.get("unit"):
