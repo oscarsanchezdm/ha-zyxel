@@ -205,26 +205,28 @@ KNOWN_SENSORS = {
         "device_class": None,
         "state_class": SensorStateClass.TOTAL_INCREASING,
     },
-    # ProcessStatus.CPUUsage — must be numeric for history/statistics
+    # ProcessStatus.CPUUsage — must be numeric for history/statistics.
+    # device_class left None: SensorDeviceClass.PERCENTAGE is not available on
+    # all Home Assistant versions; unit "%" + MEASUREMENT is enough.
     "CPUUsage": {
         "name": "CPU Usage",
         "unit": "%",
         "icon": "mdi:cpu-64-bit",
-        "device_class": SensorDeviceClass.PERCENTAGE,
+        "device_class": None,
         "state_class": SensorStateClass.MEASUREMENT,
     },
     "MemoryUsage": {
         "name": "Memory Usage",
         "unit": "%",
         "icon": "mdi:memory",
-        "device_class": SensorDeviceClass.PERCENTAGE,
+        "device_class": None,
         "state_class": SensorStateClass.MEASUREMENT,
     },
     "MemUsage": {
         "name": "Memory Usage",
         "unit": "%",
         "icon": "mdi:memory",
-        "device_class": SensorDeviceClass.PERCENTAGE,
+        "device_class": None,
         "state_class": SensorStateClass.MEASUREMENT,
     },
 }
