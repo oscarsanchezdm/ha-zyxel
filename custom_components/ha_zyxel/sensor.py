@@ -571,6 +571,7 @@ class ZyxelMemoryUsage(CoordinatorEntity, SensorEntity):
     _attr_icon = "mdi:memory"
     _attr_native_unit_of_measurement = "%"
     _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
 
     def __init__(self, coordinator, entry: ConfigEntry) -> None:
         super().__init__(coordinator)
