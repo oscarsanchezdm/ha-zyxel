@@ -17,7 +17,6 @@ from custom_components.ha_zyxel.const import (
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
 )
-from custom_components.ha_zyxel.migrate import async_migrate_unique_ids
 from custom_components.ha_zyxel.services import async_setup_services, async_unload_services
 from custom_components.ha_zyxel.sms_client import ZyxelSmsClient
 
@@ -88,9 +87,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     entry_data["coordinator"] = coordinator
 
     entry.async_on_unload(entry.add_update_listener(_async_update_listener))
-
-    # Migrate legacy unique_ids before platforms recreate entities.
-    await async_migrate_unique_ids(hass, entry.entry_id)
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     async_setup_services(hass)
