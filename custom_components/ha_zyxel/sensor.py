@@ -175,6 +175,42 @@ KNOWN_SENSORS = {
         "device_class": SensorDeviceClass.DATA_SIZE,
         "state_class": SensorStateClass.TOTAL_INCREASING,
     },
+    "PacketsSent": {
+        "name": "Packets Sent",
+        "unit": "packets",
+        "icon": "mdi:swap-vertical",
+        "device_class": None,
+        "state_class": SensorStateClass.TOTAL_INCREASING,
+    },
+    "PacketsReceived": {
+        "name": "Packets Received",
+        "unit": "packets",
+        "icon": "mdi:swap-vertical",
+        "device_class": None,
+        "state_class": SensorStateClass.TOTAL_INCREASING,
+    },
+    # device.ProcessStatus.CPUUsage — must be numeric for history/statistics
+    "CPUUsage": {
+        "name": "CPU Usage",
+        "unit": "%",
+        "icon": "mdi:cpu-64-bit",
+        "device_class": SensorDeviceClass.PERCENTAGE,
+        "state_class": SensorStateClass.MEASUREMENT,
+    },
+    "MemoryUsage": {
+        "name": "Memory Usage",
+        "unit": "%",
+        "icon": "mdi:memory",
+        "device_class": SensorDeviceClass.PERCENTAGE,
+        "state_class": SensorStateClass.MEASUREMENT,
+    },
+    "MemUsage": {
+        "name": "Memory Usage",
+        "unit": "%",
+        "icon": "mdi:memory",
+        "device_class": SensorDeviceClass.PERCENTAGE,
+        "state_class": SensorStateClass.MEASUREMENT,
+    },
 }
 
 
@@ -204,6 +240,32 @@ def _known_sensor_config(leaf: str) -> dict | None:
         if key.lower() == lowered:
             return config
     return None
+
+
+def _coerce_native_value(value: Any) -> Any:
+    """Return ints/floats as numbers; coerce numeric strings; leave the rest.
+
+    Zyxel firmware often encodes ProcessStatus.CPUUsage (and similar) as a
+    string. Home Assistant only treats the entity as numeric when native_value
+    is int/float, so we must coerce here.
+    """
+    if value is None or isinstance(value, bool):
+        # bool is a subclass of int — keep switches/flags as non-numeric.
+        return value
+    if isinstance(value, (int, float)):
+        return value
+    if isinstance(value, str):
+        text = value.strip()
+        if not text:
+            return value
+        try:
+            number = float(text)
+        except ValueError:
+            return value
+        if number.is_integer() and "." not in text and "e" not in text.lower():
+            return int(number)
+        return number
+    return value
 
 
 def _parse_uptime_seconds(value: Any) -> int | None:
@@ -244,17 +306,22 @@ async def async_setup_entry(
     coordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]
 
     # Router telemetry sensors (flattened from the status data), created once.
+    # Deduplicate by flattened key so the same path is never registered twice.
     sensors = []
+    seen_keys: set[str] = set()
     for key, value in _flatten_dict(coordinator.data or {}).items():
+        if key in seen_keys:
+            continue
         if not _is_value_scalar(value):
             continue
+        seen_keys.add(key)
         sensor_config = _known_sensor_config(key.split(".")[-1])
         if sensor_config:
             sensors.append(ConfiguredZyxelSensor(coordinator, entry, key, sensor_config))
         else:
             sensors.append(GenericZyxelSensor(coordinator, entry, key))
 
-    # Router-level primary sensors.
+    # Router-level primary sensors (fixed unique_ids — skip if somehow present).
     sensors.append(ZyxelConnectedClients(coordinator, entry))
     sensors.append(ZyxelStartupTime(coordinator, entry))
     async_add_entities(sensors)
@@ -326,14 +393,18 @@ class AbstractZyxelSensor(CoordinatorEntity, SensorEntity):
 class ConfiguredZyxelSensor(AbstractZyxelSensor):
     """Representation of a configured (curated) Zyxel sensor."""
 
-    # Curated sensors are useful enough to stay enabled (still diagnostic).
-    _attr_entity_registry_enabled_default = True
+    # Even curated router fields stay off by default: a full status dump can
+    # create dozens of entities (BytesSent per interface, cellular metrics, …).
+    _attr_entity_registry_enabled_default = False
 
     def __init__(self, coordinator, entry: ConfigEntry, key: str, config: dict):
         """Initialize the sensor."""
         super().__init__(coordinator, entry, key)
         self._config = config
-        self._attr_name = f"Zyxel {config['name']}"
+        # Path-based name (same as Generic) so entity_ids stay stable/unique —
+        # e.g. device.ProcessStatus.CPUUsage → sensor.zyxel_device_processstatus_cpuusage
+        # and traffic.br0.BytesSent ≠ traffic.wwan0.BytesSent.
+        self._attr_name = f"Zyxel {key}"
         self._attr_native_unit_of_measurement = config["unit"]
         self._attr_icon = config["icon"]
         self._attr_device_class = config["device_class"]
@@ -348,7 +419,7 @@ class ConfiguredZyxelSensor(AbstractZyxelSensor):
             return None
         if self._attr_device_class == SensorDeviceClass.DURATION:
             return _parse_uptime_seconds(value)
-        return value
+        return _coerce_native_value(value)
 
 
 class GenericZyxelSensor(AbstractZyxelSensor):
@@ -362,11 +433,21 @@ class GenericZyxelSensor(AbstractZyxelSensor):
 
     @property
     def native_value(self):
-        """Return the native value of the sensor."""
+        """Return the native value of the sensor (numeric when the payload allows)."""
         try:
-            return self._get_value_from_path()
+            return _coerce_native_value(self._get_value_from_path())
         except (KeyError, AttributeError):
             return None
+
+    @property
+    def state_class(self):
+        """Expose MEASUREMENT for numeric values so HA records statistics."""
+        value = self.native_value
+        if isinstance(value, bool) or value is None:
+            return None
+        if isinstance(value, (int, float)):
+            return SensorStateClass.MEASUREMENT
+        return None
 
     @property
     def icon(self):
@@ -549,6 +630,6 @@ class ZyxelClientAttrSensor(_ZyxelClientSensor):
     @property
     def native_value(self):
         try:
-            return self._value_fn(self._host)
+            return _coerce_native_value(self._value_fn(self._host))
         except Exception:  # noqa: BLE001 - one bad client must not break the platform
             return None
