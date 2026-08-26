@@ -26,6 +26,22 @@ _LOGGER = logging.getLogger(__name__)
 # How far calculated boot time may drift before we accept a new value (reboot).
 _STARTUP_STABILITY_SECONDS = 30
 
+# cardpage_status / status / cellwan_status often expose the same nested objects
+# (CellIntfInfo, DeviceInfo, …). Treat those roots as one namespace for entity
+# identity so we do not create sensor.zyxel_cardpage_cellintfinfo_upstream and
+# sensor.zyxel_device_cellintfinfo_upstream for the same field.
+_DEDUP_ROOTS = frozenset({"cardpage", "device", "cellular"})
+# Lower rank wins when the same relative path appears under several roots.
+_ENDPOINT_PRIORITY = {
+    "cellular": 0,
+    "device": 1,
+    "cardpage": 2,
+    "traffic": 3,
+    "lan": 4,
+    "lanhosts": 5,
+    "wifi_mesh": 6,
+    "one_connect": 7,
+}
 # Define some known sensor types for proper configuration
 KNOWN_SENSORS = {
     "Uptime": {
@@ -175,6 +191,42 @@ KNOWN_SENSORS = {
         "device_class": SensorDeviceClass.DATA_SIZE,
         "state_class": SensorStateClass.TOTAL_INCREASING,
     },
+    "PacketsSent": {
+        "name": "Packets Sent",
+        "unit": "packets",
+        "icon": "mdi:swap-vertical",
+        "device_class": None,
+        "state_class": SensorStateClass.TOTAL_INCREASING,
+    },
+    "PacketsReceived": {
+        "name": "Packets Received",
+        "unit": "packets",
+        "icon": "mdi:swap-vertical",
+        "device_class": None,
+        "state_class": SensorStateClass.TOTAL_INCREASING,
+    },
+    # ProcessStatus.CPUUsage — must be numeric for history/statistics
+    "CPUUsage": {
+        "name": "CPU Usage",
+        "unit": "%",
+        "icon": "mdi:cpu-64-bit",
+        "device_class": SensorDeviceClass.PERCENTAGE,
+        "state_class": SensorStateClass.MEASUREMENT,
+    },
+    "MemoryUsage": {
+        "name": "Memory Usage",
+        "unit": "%",
+        "icon": "mdi:memory",
+        "device_class": SensorDeviceClass.PERCENTAGE,
+        "state_class": SensorStateClass.MEASUREMENT,
+    },
+    "MemUsage": {
+        "name": "Memory Usage",
+        "unit": "%",
+        "icon": "mdi:memory",
+        "device_class": SensorDeviceClass.PERCENTAGE,
+        "state_class": SensorStateClass.MEASUREMENT,
+    },
 }
 
 
@@ -204,6 +256,73 @@ def _known_sensor_config(leaf: str) -> dict | None:
         if key.lower() == lowered:
             return config
     return None
+
+
+def _coerce_native_value(value: Any) -> Any:
+    """Return ints/floats as numbers; coerce numeric strings; leave the rest.
+
+    Zyxel firmware often encodes ProcessStatus.CPUUsage (and similar) as a
+    string. Home Assistant only treats the entity as numeric when native_value
+    is int/float, so we must coerce here.
+    """
+    if value is None or isinstance(value, bool):
+        # bool is a subclass of int — keep switches/flags as non-numeric.
+        return value
+    if isinstance(value, (int, float)):
+        return value
+    if isinstance(value, str):
+        text = value.strip()
+        if not text:
+            return value
+        try:
+            number = float(text)
+        except ValueError:
+            return value
+        if number.is_integer() and "." not in text and "e" not in text.lower():
+            return int(number)
+        return number
+    return value
+
+
+def _sensor_identity(key: str) -> str:
+    """Stable identity for entity unique_id / deduplication.
+
+    For overlapping status dumps, drop the endpoint root so
+    ``cardpage.CellIntfInfo.Upstream`` and ``device.CellIntfInfo.Upstream``
+    collapse to ``CellIntfInfo.Upstream``. Other endpoints keep the full path
+    (``traffic.br0.BytesSent`` must stay distinct from ``traffic.wwan0…``).
+    """
+    root, sep, rest = key.partition(".")
+    if sep and root in _DEDUP_ROOTS and rest:
+        return rest
+    return key
+
+
+def _endpoint_rank(key: str) -> int:
+    """Prefer cellular > device > cardpage when picking a duplicate's source."""
+    return _ENDPOINT_PRIORITY.get(key.split(".", 1)[0], 99)
+
+
+def _iter_unique_sensor_keys(data: dict | None) -> list[str]:
+    """Flatten coordinator data and drop cross-endpoint duplicate paths."""
+    best: dict[str, str] = {}
+    for key, value in _flatten_dict(data or {}).items():
+        if not _is_value_scalar(value):
+            continue
+        identity = _sensor_identity(key)
+        previous = best.get(identity)
+        if previous is None or _endpoint_rank(key) < _endpoint_rank(previous):
+            best[identity] = key
+    # Stable order for predictable entity setup.
+    return [best[identity] for identity in sorted(best)]
+
+
+def _read_path(data: Any, key: str) -> Any:
+    """Walk a dotted path into nested dicts; raise KeyError if missing."""
+    value = data
+    for part in key.split("."):
+        value = value[part]
+    return value
 
 
 def _parse_uptime_seconds(value: Any) -> int | None:
@@ -243,18 +362,16 @@ async def async_setup_entry(
     """Set up the Zyxel sensors."""
     coordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]
 
-    # Router telemetry sensors (flattened from the status data), created once.
+    # Router telemetry: one entity per logical field (cross-endpoint duplicates
+    # like cardpage.* vs device.* CellIntfInfo are collapsed).
     sensors = []
-    for key, value in _flatten_dict(coordinator.data or {}).items():
-        if not _is_value_scalar(value):
-            continue
+    for key in _iter_unique_sensor_keys(coordinator.data):
         sensor_config = _known_sensor_config(key.split(".")[-1])
         if sensor_config:
             sensors.append(ConfiguredZyxelSensor(coordinator, entry, key, sensor_config))
         else:
             sensors.append(GenericZyxelSensor(coordinator, entry, key))
 
-    # Router-level primary sensors.
     sensors.append(ZyxelConnectedClients(coordinator, entry))
     sensors.append(ZyxelStartupTime(coordinator, entry))
     async_add_entities(sensors)
@@ -284,8 +401,8 @@ async def async_setup_entry(
 class AbstractZyxelSensor(CoordinatorEntity, SensorEntity):
     """Base class for Zyxel device sensors."""
 
-    # Auto-generated router telemetry: treat as diagnostic and keep the long tail
-    # off by default. Curated (Configured) sensors re-enable themselves below.
+    # Auto-generated router telemetry: diagnostic and off by default — a full
+    # status dump creates a long tail of entities.
     _attr_entity_category = EntityCategory.DIAGNOSTIC
     _attr_entity_registry_enabled_default = False
 
@@ -293,7 +410,10 @@ class AbstractZyxelSensor(CoordinatorEntity, SensorEntity):
         """Initialize the sensor."""
         super().__init__(coordinator)
         self._key = key
-        self._attr_unique_id = f"{entry.entry_id}_{key}"
+        self._identity = _sensor_identity(key)
+        # Identity-based unique_id so cardpage/device duplicates share one entity.
+        self._attr_unique_id = f"{entry.entry_id}_{self._identity}"
+        self._attr_name = f"Zyxel {self._identity}"
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, entry.entry_id)},
             name=f"Zyxel ({entry.data['host']})",
@@ -307,33 +427,44 @@ class AbstractZyxelSensor(CoordinatorEntity, SensorEntity):
         if not self.coordinator.last_update_success:
             return False
 
-        # Check if the key exists in the data
         try:
             self._get_value_from_path()
             return True
-        except (KeyError, AttributeError):
+        except (KeyError, AttributeError, TypeError):
             return False
 
     def _get_value_from_path(self) -> Any:
-        """Get a value from nested dictionaries using the flattened key."""
-        keys = self._key.split(".")
-        value = self.coordinator.data
-        for k in keys:
-            value = value[k]
-        return value
+        """Read the preferred path, then the same relative path under other roots."""
+        data = self.coordinator.data
+        try:
+            return _read_path(data, self._key)
+        except (KeyError, TypeError):
+            pass
 
+        # Preferred endpoint missing this poll — try the other overlapping dumps.
+        if self._identity == self._key:
+            raise KeyError(self._key)
+        root = self._key.split(".", 1)[0]
+        for alt in sorted(_DEDUP_ROOTS, key=lambda r: _ENDPOINT_PRIORITY.get(r, 99)):
+            if alt == root:
+                continue
+            try:
+                return _read_path(data, f"{alt}.{self._identity}")
+            except (KeyError, TypeError):
+                continue
+        raise KeyError(self._identity)
 
 class ConfiguredZyxelSensor(AbstractZyxelSensor):
     """Representation of a configured (curated) Zyxel sensor."""
 
-    # Curated sensors are useful enough to stay enabled (still diagnostic).
-    _attr_entity_registry_enabled_default = True
+    # Even curated router fields stay off by default: a full status dump can
+    # create dozens of entities (BytesSent per interface, cellular metrics, …).
+    _attr_entity_registry_enabled_default = False
 
     def __init__(self, coordinator, entry: ConfigEntry, key: str, config: dict):
         """Initialize the sensor."""
         super().__init__(coordinator, entry, key)
         self._config = config
-        self._attr_name = f"Zyxel {config['name']}"
         self._attr_native_unit_of_measurement = config["unit"]
         self._attr_icon = config["icon"]
         self._attr_device_class = config["device_class"]
@@ -344,35 +475,38 @@ class ConfiguredZyxelSensor(AbstractZyxelSensor):
         """Return the native value of the sensor."""
         try:
             value = self._get_value_from_path()
-        except (KeyError, AttributeError):
+        except (KeyError, AttributeError, TypeError):
             return None
         if self._attr_device_class == SensorDeviceClass.DURATION:
             return _parse_uptime_seconds(value)
-        return value
+        return _coerce_native_value(value)
 
 
 class GenericZyxelSensor(AbstractZyxelSensor):
     """Representation of a generic Zyxel sensor."""
 
     @property
-    def name(self):
-        """Return the name of the sensor."""
-        name_parts = self._key.split(".")
-        return f"Zyxel {'.'.join(name_parts)}"
+    def native_value(self):
+        """Return the native value of the sensor (numeric when the payload allows)."""
+        try:
+            return _coerce_native_value(self._get_value_from_path())
+        except (KeyError, AttributeError, TypeError):
+            return None
 
     @property
-    def native_value(self):
-        """Return the native value of the sensor."""
-        try:
-            return self._get_value_from_path()
-        except (KeyError, AttributeError):
+    def state_class(self):
+        """Expose MEASUREMENT for numeric values so HA records statistics."""
+        value = self.native_value
+        if isinstance(value, bool) or value is None:
             return None
+        if isinstance(value, (int, float)):
+            return SensorStateClass.MEASUREMENT
+        return None
 
     @property
     def icon(self):
         """Return the icon."""
         return "mdi:router-wireless"
-
 
 class ZyxelConnectedClients(CoordinatorEntity, SensorEntity):
     """Number of devices currently connected to the router."""
@@ -549,6 +683,6 @@ class ZyxelClientAttrSensor(_ZyxelClientSensor):
     @property
     def native_value(self):
         try:
-            return self._value_fn(self._host)
+            return _coerce_native_value(self._value_fn(self._host))
         except Exception:  # noqa: BLE001 - one bad client must not break the platform
             return None
