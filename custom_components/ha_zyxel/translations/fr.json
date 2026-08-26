@@ -980,43 +980,43 @@
         "name": "DHCP: Masque de sous-réseau"
       },
       "f_dhcp4serpoolinfo_userclassid": {
-        "name": "DHCP: User Class ID"
+        "name": "DHCP: ID de classe utilisateur"
       },
       "f_dhcp4serpoolinfo_vendorclassid": {
-        "name": "DHCP: Vendor Class ID"
+        "name": "DHCP: ID de classe fabricant"
       },
       "f_dhcp4serpoolinfo_vendorclassidexclude": {
-        "name": "DHCP: Vendor Class IDExclude"
+        "name": "DHCP: Exclusion ID classe fabricant"
       },
       "f_dhcp4serpoolinfo_vendorclassidmode": {
-        "name": "DHCP: Vendor Class IDMode"
+        "name": "DHCP: Mode ID classe fabricant"
       },
       "f_dhcp4serpoolinfo_x_zyxel_autoreservelanip": {
-        "name": "DHCP: Auto Reserve Lan Ip"
+        "name": "DHCP: Réservation auto IP LAN"
       },
       "f_dhcp4serpoolinfo_x_zyxel_dns_type": {
-        "name": "DHCP: DNS Type"
+        "name": "DHCP: Type DNS"
       },
       "f_dhcp4serpoolinfo_x_zyxel_stb_prcode": {
-        "name": "DHCP: STB Pr Code"
+        "name": "DHCP: Code de provisionnement STB"
       },
       "f_dhcp4serpoolinfo_x_zyxel_stb_prcode_subcode": {
-        "name": "DHCP: STB Pr Code subcode"
+        "name": "DHCP: Sous-code de provisionnement STB"
       },
       "f_dhcp4serpoolinfo_x_zyxel_stb_url": {
-        "name": "DHCP: STB URL"
+        "name": "DHCP: URL STB"
       },
       "f_dhcp4serpoolinfo_x_zyxel_stb_url_subcode": {
-        "name": "DHCP: STB URL subcode"
+        "name": "DHCP: Sous-code URL STB"
       },
       "f_dhcp4serpoolinfo_x_zyxel_stb_vendorid": {
-        "name": "DHCP: STB VENDORID"
+        "name": "DHCP: ID fabricant STB"
       },
       "f_dhcp4serpoolinfo_x_zyxel_serverconfigurable": {
-        "name": "DHCP: Server Configurable"
+        "name": "DHCP: Serveur configurable"
       },
       "f_dhcp4serpoolinfo_x_zyxel_setenable": {
-        "name": "DHCP: Set Enable"
+        "name": "DHCP: Activation"
       },
       "f_enablealias": {
         "name": "Enable Alias"
