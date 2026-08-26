@@ -9,6 +9,11 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
 
 from .const import disabled_optional_data_roots
+from .entity_names import (
+    KNOWN_TRANSLATION_KEYS,
+    field_translation_key,
+    friendly_fallback_name,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -37,12 +42,13 @@ def _suffix_belongs_to_disabled_root(suffix: str, disabled: frozenset[str]) -> b
 
 
 def async_purge_stale_raw_api_names(hass: HomeAssistant, entry: ConfigEntry) -> int:
-    """Drop registry rows still labelled ``Zyxel <api.path>``.
+    """Drop registry rows with obsolete hardcoded English/API names.
 
-    Those names come from the pre-translation ``_attr_name`` format. Disabled
-    sensors often keep that ``original_name`` forever because they are rarely
-    reloaded with a live translated Entity. Removing the row lets setup
-    recreate them with friendly / translated names.
+    Removes:
+    - pre-translation ``Zyxel <api.path>`` labels
+    - English ``_attr_name`` fallbacks frozen by 0.3.10 (which blocked ca/fr)
+
+    Recreating the row lets ``translation_key`` supply the UI language.
     """
     registry = er.async_get(hass)
     prefix = f"{entry.entry_id}_"
@@ -62,7 +68,13 @@ def async_purge_stale_raw_api_names(hass: HomeAssistant, entry: ConfigEntry) -> 
 
         suffix = uid[len(prefix) :]
         original = entity_entry.original_name or ""
-        if original != f"Zyxel {suffix}":
+        stale_raw = original == f"Zyxel {suffix}"
+        translation_key = field_translation_key(suffix)
+        stale_english_fallback = (
+            translation_key in KNOWN_TRANSLATION_KEYS
+            and original == friendly_fallback_name(suffix)
+        )
+        if not stale_raw and not stale_english_fallback:
             continue
 
         registry.async_remove(entity_entry.entity_id)
@@ -70,7 +82,7 @@ def async_purge_stale_raw_api_names(hass: HomeAssistant, entry: ConfigEntry) -> 
 
     if removed:
         _LOGGER.info(
-            "Removed %s Zyxel sensor(s) with stale raw API names for re-creation",
+            "Removed %s Zyxel sensor(s) with stale hardcoded names for re-creation",
             removed,
         )
     return removed
