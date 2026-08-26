@@ -46,5 +46,1528 @@
         }
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "f_cellintfinfo_alias": {
+        "name": "Cel·lular: Àlies"
+      },
+      "f_cellintfinfo_availablenetworks": {
+        "name": "Cel·lular: Xarxes disponibles"
+      },
+      "f_cellintfinfo_currentaccesstechnology": {
+        "name": "Cel·lular: Tecnologia d’accés actual"
+      },
+      "f_cellintfinfo_downstreammaxbitrate": {
+        "name": "Cel·lular: Bitrate màxim de baixada"
+      },
+      "f_cellintfinfo_enable": {
+        "name": "Cel·lular: Activat"
+      },
+      "f_cellintfinfo_imei": {
+        "name": "Cel·lular: IMEI"
+      },
+      "f_cellintfinfo_lastchange": {
+        "name": "Cel·lular: Últim canvi"
+      },
+      "f_cellintfinfo_lowerlayers": {
+        "name": "Cel·lular: Capes inferiors"
+      },
+      "f_cellintfinfo_name": {
+        "name": "Cel·lular: Nom"
+      },
+      "f_cellintfinfo_networkinuse": {
+        "name": "Cel·lular: Xarxa en ús"
+      },
+      "f_cellintfinfo_networkrequested": {
+        "name": "Cel·lular: Xarxa sol·licitada"
+      },
+      "f_cellintfinfo_preferredaccesstechnology": {
+        "name": "Cel·lular: Tecnologia d’accés preferida"
+      },
+      "f_cellintfinfo_rssi": {
+        "name": "RSSI cel·lular"
+      },
+      "f_cellintfinfo_status": {
+        "name": "Cel·lular: Estat"
+      },
+      "f_cellintfinfo_supportedaccesstechnologies": {
+        "name": "Cel·lular: Tecnologies d’accés compatibles"
+      },
+      "f_cellintfinfo_upstream": {
+        "name": "Cel·lular: Pujada"
+      },
+      "f_cellintfinfo_upstreammaxbitrate": {
+        "name": "Cel·lular: Bitrate màxim de pujada"
+      },
+      "f_cellintfinfo_x_zyxel_bsic": {
+        "name": "Cel·lular: BSIC"
+      },
+      "f_cellintfinfo_x_zyxel_cpichecno": {
+        "name": "Cel·lular: CPICH Ec/No"
+      },
+      "f_cellintfinfo_x_zyxel_cpichrscp": {
+        "name": "Cel·lular: CPICH RSCP"
+      },
+      "f_cellintfinfo_x_zyxel_cqi": {
+        "name": "Cel·lular: CQI"
+      },
+      "f_cellintfinfo_x_zyxel_cellid": {
+        "name": "Cel·lular: ID de cel·la"
+      },
+      "f_cellintfinfo_x_zyxel_currentband": {
+        "name": "Cel·lular: Banda actual"
+      },
+      "f_cellintfinfo_x_zyxel_downlinkbandwidth": {
+        "name": "Cel·lular: Amplada de banda de baixada"
+      },
+      "f_cellintfinfo_x_zyxel_hw_nat_enable": {
+        "name": "Cel·lular: NAT per maquinari"
+      },
+      "f_cellintfinfo_x_zyxel_lac": {
+        "name": "Cel·lular: LAC"
+      },
+      "f_cellintfinfo_x_zyxel_mcs": {
+        "name": "Cel·lular: MCS"
+      },
+      "f_cellintfinfo_x_zyxel_modulesoftwareversion": {
+        "name": "Cel·lular: Versió de programari del mòdul"
+      },
+      "f_cellintfinfo_x_zyxel_pmi": {
+        "name": "Cel·lular: PMI"
+      },
+      "f_cellintfinfo_x_zyxel_phycellid": {
+        "name": "Cel·lular: ID de cel·la física"
+      },
+      "f_cellintfinfo_x_zyxel_preferredbands": {
+        "name": "Cel·lular: Bandes preferides"
+      },
+      "f_cellintfinfo_x_zyxel_primaryscramblingcode": {
+        "name": "Cel·lular: Codi de scrambling primari"
+      },
+      "f_cellintfinfo_x_zyxel_rac": {
+        "name": "Cel·lular: RAC"
+      },
+      "f_cellintfinfo_x_zyxel_rfcn": {
+        "name": "Cel·lular: RFCN"
+      },
+      "f_cellintfinfo_x_zyxel_ri": {
+        "name": "Cel·lular: RI"
+      },
+      "f_cellintfinfo_x_zyxel_rsrp": {
+        "name": "RSRP cel·lular"
+      },
+      "f_cellintfinfo_x_zyxel_rsrq": {
+        "name": "RSRQ cel·lular"
+      },
+      "f_cellintfinfo_x_zyxel_sinr": {
+        "name": "SINR cel·lular"
+      },
+      "f_cellintfinfo_x_zyxel_supportedbands": {
+        "name": "Cel·lular: Bandes compatibles"
+      },
+      "f_cellintfinfo_x_zyxel_tac": {
+        "name": "Cel·lular: TAC"
+      },
+      "f_cellintfinfo_x_zyxel_uplinkbandwidth": {
+        "name": "Cel·lular: Amplada de banda de pujada"
+      },
+      "f_antenna_status": {
+        "name": "Estat de l’antena"
+      },
+      "f_cell_roaming_enable": {
+        "name": "Roaming activat"
+      },
+      "f_cell_roaming_status": {
+        "name": "Estat del roaming"
+      },
+      "f_intf_bsic": {
+        "name": "BSIC"
+      },
+      "f_intf_cqi": {
+        "name": "CQI"
+      },
+      "f_intf_cell_id": {
+        "name": "ID de cel·la"
+      },
+      "f_intf_current_access_technology": {
+        "name": "Tecnologia d’accés actual"
+      },
+      "f_intf_current_band": {
+        "name": "Banda actual"
+      },
+      "f_intf_downlink_bandwidth": {
+        "name": "Amplada de banda de baixada"
+      },
+      "f_intf_ecno": {
+        "name": "Ec/No"
+      },
+      "f_intf_imei": {
+        "name": "IMEI"
+      },
+      "f_intf_lac": {
+        "name": "LAC"
+      },
+      "f_intf_mcs": {
+        "name": "MCS"
+      },
+      "f_intf_module_software_version": {
+        "name": "Versió de programari del mòdul"
+      },
+      "f_intf_network_in_use": {
+        "name": "Xarxa en ús"
+      },
+      "f_intf_pmi": {
+        "name": "PMI"
+      },
+      "f_intf_phycell_id": {
+        "name": "ID de cel·la física"
+      },
+      "f_intf_rac": {
+        "name": "RAC"
+      },
+      "f_intf_rfcn": {
+        "name": "RFCN"
+      },
+      "f_intf_ri": {
+        "name": "RI"
+      },
+      "f_intf_rscp": {
+        "name": "RSCP"
+      },
+      "f_intf_rsrp": {
+        "name": "RSRP cel·lular"
+      },
+      "f_intf_rsrq": {
+        "name": "RSRQ cel·lular"
+      },
+      "f_intf_rssi": {
+        "name": "RSSI cel·lular"
+      },
+      "f_intf_sinr": {
+        "name": "SINR cel·lular"
+      },
+      "f_intf_status": {
+        "name": "Estat cel·lular"
+      },
+      "f_intf_supported_bands": {
+        "name": "Bandes compatibles"
+      },
+      "f_intf_tac": {
+        "name": "TAC"
+      },
+      "f_intf_uplink_bandwidth": {
+        "name": "Amplada de banda de pujada"
+      },
+      "f_cellintfzynrnsainfo_band": {
+        "name": "NSA: Banda"
+      },
+      "f_cellintfzynrnsainfo_downlinkbandwidth": {
+        "name": "NSA: Amplada de banda de baixada"
+      },
+      "f_cellintfzynrnsainfo_enable": {
+        "name": "NSA: Activat"
+      },
+      "f_cellintfzynrnsainfo_mcc": {
+        "name": "NSA: MCC"
+      },
+      "f_cellintfzynrnsainfo_mnc": {
+        "name": "NSA: MNC"
+      },
+      "f_cellintfzynrnsainfo_phycellid": {
+        "name": "NSA: ID de cel·la física"
+      },
+      "f_cellintfzynrnsainfo_rfcn": {
+        "name": "NSA: RFCN"
+      },
+      "f_cellintfzynrnsainfo_rsrp": {
+        "name": "NSA: RSRP"
+      },
+      "f_cellintfzynrnsainfo_rsrq": {
+        "name": "NSA: RSRQ"
+      },
+      "f_cellintfzynrnsainfo_rssi": {
+        "name": "NSA: RSSI"
+      },
+      "f_cellintfzynrnsainfo_sinr": {
+        "name": "NSA: SINR"
+      },
+      "f_cellintfzynrnsainfo_uplinkbandwidth": {
+        "name": "NSA: Amplada de banda de pujada"
+      },
+      "f_nsa_band": {
+        "name": "Banda NSA"
+      },
+      "f_nsa_downlinkbandwidth": {
+        "name": "Amplada de banda de baixada NSA"
+      },
+      "f_nsa_enable": {
+        "name": "NSA activat"
+      },
+      "f_nsa_mcc": {
+        "name": "MCC NSA"
+      },
+      "f_nsa_mnc": {
+        "name": "MNC NSA"
+      },
+      "f_nsa_phycellid": {
+        "name": "ID de cel·la física NSA"
+      },
+      "f_nsa_rfcn": {
+        "name": "RFCN NSA"
+      },
+      "f_nsa_rsrp": {
+        "name": "RSRP NSA"
+      },
+      "f_nsa_rsrq": {
+        "name": "RSRQ NSA"
+      },
+      "f_nsa_rssi": {
+        "name": "RSSI NSA"
+      },
+      "f_nsa_sinr": {
+        "name": "SINR NSA"
+      },
+      "f_nsa_uplinkbandwidth": {
+        "name": "Amplada de banda de pujada NSA"
+      },
+      "f_cellintfsimfinfo_iccid": {
+        "name": "SIM: ICCID"
+      },
+      "f_cellintfsimfinfo_imsi": {
+        "name": "SIM: IMSI"
+      },
+      "f_cellintfsimfinfo_msisdn": {
+        "name": "SIM: MSISDN"
+      },
+      "f_cellintfsimfinfo_pin": {
+        "name": "SIM: PIN"
+      },
+      "f_cellintfsimfinfo_pincheck": {
+        "name": "SIM: Comprovació PIN"
+      },
+      "f_cellintfsimfinfo_status": {
+        "name": "SIM: Estat"
+      },
+      "f_cellintfsimfinfo_x_zyxel_autounlockpin": {
+        "name": "SIM: Desbloqueig automàtic del PIN"
+      },
+      "f_cellintfsimfinfo_x_zyxel_newpin": {
+        "name": "SIM: PIN nou"
+      },
+      "f_cellintfsimfinfo_x_zyxel_pin_protection": {
+        "name": "SIM: Protecció PIN"
+      },
+      "f_cellintfsimfinfo_x_zyxel_pin_remainingattempts": {
+        "name": "SIM: Intents de PIN restants"
+      },
+      "f_cellintfsimfinfo_x_zyxel_pin_state": {
+        "name": "SIM: Estat del PIN"
+      },
+      "f_cellintfsimfinfo_x_zyxel_puk": {
+        "name": "SIM: PUK"
+      },
+      "f_cellintfsimfinfo_x_zyxel_puk_remainingattempts": {
+        "name": "SIM: Intents de PUK restants"
+      },
+      "f_usim_iccid": {
+        "name": "ICCID USIM"
+      },
+      "f_usim_imsi": {
+        "name": "IMSI USIM"
+      },
+      "f_usim_pin_protection": {
+        "name": "Protecció PIN USIM"
+      },
+      "f_usim_pin_remaining_attempts": {
+        "name": "Intents de PIN USIM restants"
+      },
+      "f_usim_status": {
+        "name": "Estat USIM"
+      },
+      "f_cellintfzyippassthruinfo_connectionmode": {
+        "name": "Passthrough: Mode de connexió"
+      },
+      "f_cellintfzyippassthruinfo_enable": {
+        "name": "Passthrough: Activat"
+      },
+      "f_cellintfzyippassthruinfo_macaddress": {
+        "name": "Passthrough: Adreça MAC"
+      },
+      "f_passthru_enable": {
+        "name": "Passthrough activat"
+      },
+      "f_passthru_macaddr": {
+        "name": "MAC de passthrough"
+      },
+      "f_passthru_mode": {
+        "name": "Mode passthrough"
+      },
+      "f_wwanstatsinfo_connectionuptime": {
+        "name": "WWAN: Temps de connexió"
+      },
+      "f_wwanstatsinfo_fwversion": {
+        "name": "WWAN: Versió de firmware"
+      },
+      "f_wwanstatsinfo_manufacturer": {
+        "name": "WWAN: Fabricant"
+      },
+      "f_wwanstatsinfo_model": {
+        "name": "WWAN: Model"
+      },
+      "f_wwanstatsinfo_remainingpin": {
+        "name": "WWAN: Intents de PIN restants"
+      },
+      "f_wwanstatsinfo_simimsi": {
+        "name": "WWAN: IMSI de la SIM"
+      },
+      "f_wwanstatsinfo_serviceprovider": {
+        "name": "WWAN: Proveïdor"
+      },
+      "f_wwanstatsinfo_signalstrength": {
+        "name": "WWAN: Força del senyal"
+      },
+      "f_deviceinfo_additionalhardwareversion": {
+        "name": "Dispositiu: Versió de maquinari addicional"
+      },
+      "f_deviceinfo_additionalsoftwareversion": {
+        "name": "Dispositiu: Versió de programari addicional"
+      },
+      "f_deviceinfo_connectivity": {
+        "name": "Dispositiu: Connectivitat"
+      },
+      "f_deviceinfo_description": {
+        "name": "Dispositiu: Descripció"
+      },
+      "f_deviceinfo_enable": {
+        "name": "Dispositiu: Activat"
+      },
+      "f_deviceinfo_firstusedate": {
+        "name": "Dispositiu: Data del primer ús"
+      },
+      "f_deviceinfo_fixmanufactureroui": {
+        "name": "Dispositiu: OUI del fabricant (fix)"
+      },
+      "f_deviceinfo_hardwareversion": {
+        "name": "Dispositiu: Versió de maquinari"
+      },
+      "f_deviceinfo_internalsoftwareversion": {
+        "name": "Dispositiu: Versió de programari interna"
+      },
+      "f_deviceinfo_locationnumberofentries": {
+        "name": "Dispositiu: Ubicacions"
+      },
+      "f_deviceinfo_manufacturer": {
+        "name": "Dispositiu: Fabricant"
+      },
+      "f_deviceinfo_manufactureroui": {
+        "name": "Dispositiu: OUI del fabricant"
+      },
+      "f_deviceinfo_modelname": {
+        "name": "Dispositiu: Nom del model"
+      },
+      "f_deviceinfo_modulesoftwareversion": {
+        "name": "Dispositiu: Versió de programari del mòdul"
+      },
+      "f_deviceinfo_ncc_qr": {
+        "name": "Dispositiu: QR NCC"
+      },
+      "f_deviceinfo_nebulaclaimreason": {
+        "name": "Dispositiu: Motiu de claim Nebula"
+      },
+      "f_deviceinfo_nebulaclaimstatus": {
+        "name": "Dispositiu: Estat de claim Nebula"
+      },
+      "f_deviceinfo_nebulacloudreason": {
+        "name": "Dispositiu: Motiu del núvol Nebula"
+      },
+      "f_deviceinfo_nebulacloudstatus": {
+        "name": "Dispositiu: Estat del núvol Nebula"
+      },
+      "f_deviceinfo_nebulantpreason": {
+        "name": "Dispositiu: Motiu NTP Nebula"
+      },
+      "f_deviceinfo_nebulantpstatus": {
+        "name": "Dispositiu: Estat NTP Nebula"
+      },
+      "f_deviceinfo_packageversion": {
+        "name": "Dispositiu: Versió del paquet"
+      },
+      "f_deviceinfo_processornumberofentries": {
+        "name": "Dispositiu: Processadors"
+      },
+      "f_deviceinfo_productclass": {
+        "name": "Dispositiu: Classe de producte"
+      },
+      "f_deviceinfo_provisioningcode": {
+        "name": "Dispositiu: Codi de provisionament"
+      },
+      "f_deviceinfo_serialnumber": {
+        "name": "Dispositiu: Número de sèrie"
+      },
+      "f_deviceinfo_softwareversion": {
+        "name": "Dispositiu: Versió de programari"
+      },
+      "f_deviceinfo_supporteddatamodelnumberofentries": {
+        "name": "Dispositiu: Models de dades compatibles"
+      },
+      "f_deviceinfo_uptime": {
+        "name": "Temps d’activitat"
+      },
+      "f_deviceinfo_vendorconfigfilenumberofentries": {
+        "name": "Dispositiu: Fitxers de config. del fabricant"
+      },
+      "f_deviceinfo_vendorlogfilenumberofentries": {
+        "name": "Dispositiu: Fitxers de registre del fabricant"
+      },
+      "f_deviceinfo_x_zyxel_provisioningcodeintf": {
+        "name": "Dispositiu: Interfície del codi de provisionament"
+      },
+      "f_deviceinfo_x_zyxel_provisioningkey": {
+        "name": "Dispositiu: Clau de provisionament"
+      },
+      "f_deviceinfo_x_zyxel_softwarearchitecture": {
+        "name": "Dispositiu: Arquitectura de programari"
+      },
+      "f_memorystatus_free": {
+        "name": "Memòria lliure"
+      },
+      "f_memorystatus_total": {
+        "name": "Memòria total"
+      },
+      "f_processstatus_cpuusage": {
+        "name": "Ús de CPU"
+      },
+      "f_processstatus_processnumberofentries": {
+        "name": "Processos"
+      },
+      "f_systeminfo_cbt_accountreset": {
+        "name": "Sistema: Restabliment del compte"
+      },
+      "f_systeminfo_contact": {
+        "name": "Sistema: Contacte"
+      },
+      "f_systeminfo_domainname": {
+        "name": "Sistema: Nom de domini"
+      },
+      "f_systeminfo_hostname": {
+        "name": "Sistema: Nom d’amfitrió"
+      },
+      "f_systeminfo_ishostnamemodify": {
+        "name": "Sistema: Nom d’amfitrió modificable"
+      },
+      "f_systeminfo_location": {
+        "name": "Sistema: Ubicació"
+      },
+      "f_systeminfo_onlineguide": {
+        "name": "Sistema: Guia en línia"
+      },
+      "f_systeminfo_x_zyxel_loginbanner": {
+        "name": "Sistema: Bàner d’inici de sessió"
+      },
+      "f_gponinfo_connectivitycap": {
+        "name": "GPON: Connectivity Cap"
+      },
+      "f_gponinfo_emergencystate": {
+        "name": "GPON: Emergency State"
+      },
+      "f_gponinfo_enhancedpsk": {
+        "name": "GPON: Enhanced PSK"
+      },
+      "f_gponinfo_equipmentid": {
+        "name": "GPON: Equipment Id"
+      },
+      "f_gponinfo_extendedtclayer": {
+        "name": "GPON: Extended TClayer"
+      },
+      "f_gponinfo_maxports": {
+        "name": "GPON: Max Ports"
+      },
+      "f_gponinfo_modelname": {
+        "name": "GPON: Nom del model"
+      },
+      "f_gponinfo_omccversion": {
+        "name": "GPON: OMCCVersion"
+      },
+      "f_gponinfo_onusurvivaltime": {
+        "name": "GPON: ONUSurvival Time"
+      },
+      "f_gponinfo_onutype": {
+        "name": "GPON: Onu Type"
+      },
+      "f_gponinfo_operationalstate": {
+        "name": "GPON: Operational State"
+      },
+      "f_gponinfo_password": {
+        "name": "GPON: Password"
+      },
+      "f_gponinfo_portlist1": {
+        "name": "GPON: Port List1"
+      },
+      "f_gponinfo_qosconfflex": {
+        "name": "GPON: Qos Conf Flex"
+      },
+      "f_gponinfo_securitycap": {
+        "name": "GPON: Security Cap"
+      },
+      "f_gponinfo_securitymode": {
+        "name": "GPON: Security Mode"
+      },
+      "f_gponinfo_serialnumber": {
+        "name": "GPON: Número de sèrie"
+      },
+      "f_gponinfo_tmoption": {
+        "name": "GPON: TMOption"
+      },
+      "f_gponinfo_totalgemportnum": {
+        "name": "GPON: Total GEMPort Num"
+      },
+      "f_gponinfo_totalpqnum": {
+        "name": "GPON: Total PQNum"
+      },
+      "f_gponinfo_totaltsnum": {
+        "name": "GPON: Total TSNum"
+      },
+      "f_gponinfo_vendorid": {
+        "name": "GPON: Vendor Id"
+      },
+      "f_gponinfo_vendorprocode": {
+        "name": "GPON: Vendor Pro Code"
+      },
+      "f_gponinfo_version": {
+        "name": "GPON: Version"
+      },
+      "f_gponinfo_rxpower": {
+        "name": "GPON: Potència RX"
+      },
+      "f_gponinfo_temperature": {
+        "name": "GPON: Temperatura"
+      },
+      "f_gponinfo_txpower": {
+        "name": "GPON: Potència TX"
+      },
+      "f_gponinfo_voltage": {
+        "name": "GPON: Voltatge"
+      },
+      "f_gponstatsinfo_rxpowersignal": {
+        "name": "GPON: Senyal de potència RX"
+      },
+      "f_gponstatsinfo_sfp_model": {
+        "name": "GPON: Model SFP"
+      },
+      "f_gponstatsinfo_sfp_presence": {
+        "name": "GPON: SFP present"
+      },
+      "f_gponstatsinfo_sfp_serial": {
+        "name": "GPON: Sèrie SFP"
+      },
+      "f_gponstatsinfo_sfp_vendor": {
+        "name": "GPON: Fabricant SFP"
+      },
+      "f_gponstatsinfo_temperature": {
+        "name": "GPON: Temperatura"
+      },
+      "f_gponstatsinfo_txpowersignal": {
+        "name": "GPON: Senyal de potència TX"
+      },
+      "f_firewallinfo_advancedlevel": {
+        "name": "Firewall: Advanced Level"
+      },
+      "f_firewallinfo_chainnumberofentries": {
+        "name": "Firewall: Chain Number Of Entries"
+      },
+      "f_firewallinfo_config": {
+        "name": "Firewall: Config"
+      },
+      "f_firewallinfo_enable": {
+        "name": "Firewall: Activat"
+      },
+      "f_firewallinfo_ipv4_enable": {
+        "name": "Firewall: IPv4 Enable"
+      },
+      "f_firewallinfo_ipv6_enable": {
+        "name": "Firewall: IPv6 Enable"
+      },
+      "f_firewallinfo_lastchange": {
+        "name": "Firewall: Últim canvi"
+      },
+      "f_firewallinfo_levelnumberofentries": {
+        "name": "Firewall: Level Number Of Entries"
+      },
+      "f_firewallinfo_type": {
+        "name": "Firewall: Type"
+      },
+      "f_firewallinfo_version": {
+        "name": "Firewall: Version"
+      },
+      "f_firewallinfo_x_zyxel_defaultconfig": {
+        "name": "Firewall: Default Config"
+      },
+      "f_firewallinfo_x_zyxel_denyping": {
+        "name": "Firewall: Deny Ping"
+      },
+      "f_firewallinfo_x_zyxel_dos_enable": {
+        "name": "Firewall: Dos Enable"
+      },
+      "f_br0_broadcastpacketsreceived": {
+        "name": "Paquets broadcast rebuts (br0)"
+      },
+      "f_br0_broadcastpacketssent": {
+        "name": "Paquets broadcast enviats (br0)"
+      },
+      "f_br0_bytesreceived": {
+        "name": "Bytes rebuts (br0)"
+      },
+      "f_br0_bytessent": {
+        "name": "Bytes enviats (br0)"
+      },
+      "f_br0_discardpacketsreceived": {
+        "name": "Paquets descartats rebuts (br0)"
+      },
+      "f_br0_discardpacketssent": {
+        "name": "Paquets descartats enviats (br0)"
+      },
+      "f_br0_errorsreceived": {
+        "name": "Errors rebuts (br0)"
+      },
+      "f_br0_errorssent": {
+        "name": "Errors enviats (br0)"
+      },
+      "f_br0_multicastpacketsreceived": {
+        "name": "Paquets multicast rebuts (br0)"
+      },
+      "f_br0_multicastpacketssent": {
+        "name": "Paquets multicast enviats (br0)"
+      },
+      "f_br0_packetsreceived": {
+        "name": "Paquets rebuts (br0)"
+      },
+      "f_br0_packetssent": {
+        "name": "Paquets enviats (br0)"
+      },
+      "f_br0_unicastpacketsreceived": {
+        "name": "Paquets unicast rebuts (br0)"
+      },
+      "f_br0_unicastpacketssent": {
+        "name": "Paquets unicast enviats (br0)"
+      },
+      "f_br0_unknownprotopacketsreceived": {
+        "name": "Paquets de protocol desconegut rebuts (br0)"
+      },
+      "f_ccmni1_broadcastpacketsreceived": {
+        "name": "Paquets broadcast rebuts (ccmni1)"
+      },
+      "f_ccmni1_broadcastpacketssent": {
+        "name": "Paquets broadcast enviats (ccmni1)"
+      },
+      "f_ccmni1_bytesreceived": {
+        "name": "Bytes rebuts (ccmni1)"
+      },
+      "f_ccmni1_bytessent": {
+        "name": "Bytes enviats (ccmni1)"
+      },
+      "f_ccmni1_discardpacketsreceived": {
+        "name": "Paquets descartats rebuts (ccmni1)"
+      },
+      "f_ccmni1_discardpacketssent": {
+        "name": "Paquets descartats enviats (ccmni1)"
+      },
+      "f_ccmni1_errorsreceived": {
+        "name": "Errors rebuts (ccmni1)"
+      },
+      "f_ccmni1_errorssent": {
+        "name": "Errors enviats (ccmni1)"
+      },
+      "f_ccmni1_multicastpacketsreceived": {
+        "name": "Paquets multicast rebuts (ccmni1)"
+      },
+      "f_ccmni1_multicastpacketssent": {
+        "name": "Paquets multicast enviats (ccmni1)"
+      },
+      "f_ccmni1_packetsreceived": {
+        "name": "Paquets rebuts (ccmni1)"
+      },
+      "f_ccmni1_packetssent": {
+        "name": "Paquets enviats (ccmni1)"
+      },
+      "f_ccmni1_unicastpacketsreceived": {
+        "name": "Paquets unicast rebuts (ccmni1)"
+      },
+      "f_ccmni1_unicastpacketssent": {
+        "name": "Paquets unicast enviats (ccmni1)"
+      },
+      "f_ccmni1_unknownprotopacketsreceived": {
+        "name": "Paquets de protocol desconegut rebuts (ccmni1)"
+      },
+      "f_ccmni2_broadcastpacketsreceived": {
+        "name": "Paquets broadcast rebuts (ccmni2)"
+      },
+      "f_ccmni2_broadcastpacketssent": {
+        "name": "Paquets broadcast enviats (ccmni2)"
+      },
+      "f_ccmni2_bytesreceived": {
+        "name": "Bytes rebuts (ccmni2)"
+      },
+      "f_ccmni2_bytessent": {
+        "name": "Bytes enviats (ccmni2)"
+      },
+      "f_ccmni2_discardpacketsreceived": {
+        "name": "Paquets descartats rebuts (ccmni2)"
+      },
+      "f_ccmni2_discardpacketssent": {
+        "name": "Paquets descartats enviats (ccmni2)"
+      },
+      "f_ccmni2_errorsreceived": {
+        "name": "Errors rebuts (ccmni2)"
+      },
+      "f_ccmni2_errorssent": {
+        "name": "Errors enviats (ccmni2)"
+      },
+      "f_ccmni2_multicastpacketsreceived": {
+        "name": "Paquets multicast rebuts (ccmni2)"
+      },
+      "f_ccmni2_multicastpacketssent": {
+        "name": "Paquets multicast enviats (ccmni2)"
+      },
+      "f_ccmni2_packetsreceived": {
+        "name": "Paquets rebuts (ccmni2)"
+      },
+      "f_ccmni2_packetssent": {
+        "name": "Paquets enviats (ccmni2)"
+      },
+      "f_ccmni2_unicastpacketsreceived": {
+        "name": "Paquets unicast rebuts (ccmni2)"
+      },
+      "f_ccmni2_unicastpacketssent": {
+        "name": "Paquets unicast enviats (ccmni2)"
+      },
+      "f_ccmni2_unknownprotopacketsreceived": {
+        "name": "Paquets de protocol desconegut rebuts (ccmni2)"
+      },
+      "f_eth0_2_broadcastpacketsreceived": {
+        "name": "Eth0: Paquets broadcast rebuts"
+      },
+      "f_eth0_2_broadcastpacketssent": {
+        "name": "Eth0: Paquets broadcast enviats"
+      },
+      "f_eth0_2_bytesreceived": {
+        "name": "Eth0: Bytes rebuts"
+      },
+      "f_eth0_2_bytessent": {
+        "name": "Eth0: Bytes enviats"
+      },
+      "f_eth0_2_discardpacketsreceived": {
+        "name": "Eth0: Paquets descartats rebuts"
+      },
+      "f_eth0_2_discardpacketssent": {
+        "name": "Eth0: Paquets descartats enviats"
+      },
+      "f_eth0_2_errorsreceived": {
+        "name": "Eth0: Errors rebuts"
+      },
+      "f_eth0_2_errorssent": {
+        "name": "Eth0: Errors enviats"
+      },
+      "f_eth0_2_multicastpacketsreceived": {
+        "name": "Eth0: Paquets multicast rebuts"
+      },
+      "f_eth0_2_multicastpacketssent": {
+        "name": "Eth0: Paquets multicast enviats"
+      },
+      "f_eth0_2_packetsreceived": {
+        "name": "Eth0: Paquets rebuts"
+      },
+      "f_eth0_2_packetssent": {
+        "name": "Eth0: Paquets enviats"
+      },
+      "f_eth0_2_unicastpacketsreceived": {
+        "name": "Eth0: Paquets unicast rebuts"
+      },
+      "f_eth0_2_unicastpacketssent": {
+        "name": "Eth0: Paquets unicast enviats"
+      },
+      "f_eth0_2_unknownprotopacketsreceived": {
+        "name": "Eth0: Paquets de protocol desconegut rebuts"
+      },
+      "f_aliasipaddress": {
+        "name": "Alias IPAddress"
+      },
+      "f_dhcptype": {
+        "name": "DHCPType"
+      },
+      "f_dhcp_autoreservelanip": {
+        "name": "DHCP Auto Reserve Lan Ip"
+      },
+      "f_dhcp_leasetime": {
+        "name": "DHCP Lease Time"
+      },
+      "f_dhcp_maxaddress": {
+        "name": "DHCP Max Address"
+      },
+      "f_dhcp_minaddress": {
+        "name": "DHCP Min Address"
+      },
+      "f_dnsqueryscenario": {
+        "name": "DNSQuery Scenario"
+      },
+      "f_dnsservers": {
+        "name": "DNSServers"
+      },
+      "f_dns_type": {
+        "name": "DNS Type"
+      },
+      "f_dhcp4serpoolinfo_alias": {
+        "name": "DHCP: Àlies"
+      },
+      "f_dhcp4serpoolinfo_chaddr": {
+        "name": "DHCP: Chaddr"
+      },
+      "f_dhcp4serpoolinfo_chaddrexclude": {
+        "name": "DHCP: Chaddr Exclude"
+      },
+      "f_dhcp4serpoolinfo_chaddrmask": {
+        "name": "DHCP: Chaddr Mask"
+      },
+      "f_dhcp4serpoolinfo_clientid": {
+        "name": "DHCP: Client ID"
+      },
+      "f_dhcp4serpoolinfo_clientidexclude": {
+        "name": "DHCP: Client IDExclude"
+      },
+      "f_dhcp4serpoolinfo_clientnumberofentries": {
+        "name": "DHCP: Client Number Of Entries"
+      },
+      "f_dhcp4serpoolinfo_dnsservers": {
+        "name": "DHCP: DNSServers"
+      },
+      "f_dhcp4serpoolinfo_domainname": {
+        "name": "DHCP: Nom de domini"
+      },
+      "f_dhcp4serpoolinfo_enable": {
+        "name": "DHCP: Activat"
+      },
+      "f_dhcp4serpoolinfo_iprouters": {
+        "name": "DHCP: IPRouters"
+      },
+      "f_dhcp4serpoolinfo_interface": {
+        "name": "DHCP: Interface"
+      },
+      "f_dhcp4serpoolinfo_leasetime": {
+        "name": "DHCP: Lease Time"
+      },
+      "f_dhcp4serpoolinfo_maxaddress": {
+        "name": "DHCP: Max Address"
+      },
+      "f_dhcp4serpoolinfo_minaddress": {
+        "name": "DHCP: Min Address"
+      },
+      "f_dhcp4serpoolinfo_optionnumberofentries": {
+        "name": "DHCP: Option Number Of Entries"
+      },
+      "f_dhcp4serpoolinfo_order": {
+        "name": "DHCP: Order"
+      },
+      "f_dhcp4serpoolinfo_reservedaddresses": {
+        "name": "DHCP: Reserved Addresses"
+      },
+      "f_dhcp4serpoolinfo_staticaddressnumberofentries": {
+        "name": "DHCP: Static Address Number Of Entries"
+      },
+      "f_dhcp4serpoolinfo_status": {
+        "name": "DHCP: Estat"
+      },
+      "f_dhcp4serpoolinfo_subnetmask": {
+        "name": "DHCP: Màscara de subxarxa"
+      },
+      "f_dhcp4serpoolinfo_userclassid": {
+        "name": "DHCP: User Class ID"
+      },
+      "f_dhcp4serpoolinfo_vendorclassid": {
+        "name": "DHCP: Vendor Class ID"
+      },
+      "f_dhcp4serpoolinfo_vendorclassidexclude": {
+        "name": "DHCP: Vendor Class IDExclude"
+      },
+      "f_dhcp4serpoolinfo_vendorclassidmode": {
+        "name": "DHCP: Vendor Class IDMode"
+      },
+      "f_dhcp4serpoolinfo_x_zyxel_autoreservelanip": {
+        "name": "DHCP: Auto Reserve Lan Ip"
+      },
+      "f_dhcp4serpoolinfo_x_zyxel_dns_type": {
+        "name": "DHCP: DNS Type"
+      },
+      "f_dhcp4serpoolinfo_x_zyxel_stb_prcode": {
+        "name": "DHCP: STB Pr Code"
+      },
+      "f_dhcp4serpoolinfo_x_zyxel_stb_prcode_subcode": {
+        "name": "DHCP: STB Pr Code subcode"
+      },
+      "f_dhcp4serpoolinfo_x_zyxel_stb_url": {
+        "name": "DHCP: STB URL"
+      },
+      "f_dhcp4serpoolinfo_x_zyxel_stb_url_subcode": {
+        "name": "DHCP: STB URL subcode"
+      },
+      "f_dhcp4serpoolinfo_x_zyxel_stb_vendorid": {
+        "name": "DHCP: STB VENDORID"
+      },
+      "f_dhcp4serpoolinfo_x_zyxel_serverconfigurable": {
+        "name": "DHCP: Server Configurable"
+      },
+      "f_dhcp4serpoolinfo_x_zyxel_setenable": {
+        "name": "DHCP: Set Enable"
+      },
+      "f_enablealias": {
+        "name": "Enable Alias"
+      },
+      "f_enabledhcp": {
+        "name": "Enable DHCP"
+      },
+      "f_igmpsnoopingmode": {
+        "name": "IGMPSnooping Mode"
+      },
+      "f_ipaddress": {
+        "name": "Adreça IP"
+      },
+      "f_ipv6_dnsassign": {
+        "name": "IPv6 DNSAssign"
+      },
+      "f_ipv6_identifiertype": {
+        "name": "IPv6 Identifier Type"
+      },
+      "f_ipv6_lanaddrassign": {
+        "name": "IPv6 Lan Addr Assign"
+      },
+      "f_ipv6_lanenable": {
+        "name": "IPv6 Lan Enable"
+      },
+      "f_ipv6_linklocaladdresstype": {
+        "name": "IPv6 Link Local Address Type"
+      },
+      "f_ipv6_prefixtype": {
+        "name": "IPv6 Prefix Type"
+      },
+      "f_ipv6_prefixwan": {
+        "name": "IPv6 Prefix Wan"
+      },
+      "f_ipv6_dnsserver1": {
+        "name": "Ipv6 DNSServer1"
+      },
+      "f_ipv6_dnsserver2": {
+        "name": "Ipv6 DNSServer2"
+      },
+      "f_ipv6_dnsserver3": {
+        "name": "Ipv6 DNSServer3"
+      },
+      "f_mldsnoopingmode": {
+        "name": "MLDSnooping Mode"
+      },
+      "f_maxmtusize": {
+        "name": "Max MTUSize"
+      },
+      "f_name": {
+        "name": "Nom"
+      },
+      "f_subnetmask": {
+        "name": "Màscara de subxarxa"
+      },
+      "f_lanportinfo_lanmac": {
+        "name": "Port LAN: MAC LAN"
+      },
+      "f_lanportinfo_ethportexist": {
+        "name": "Port LAN: Port Ethernet present"
+      },
+      "f_partctlnum": {
+        "name": "Número de control de ports"
+      },
+      "f_controller_mode": {
+        "name": "Mode controlador"
+      },
+      "f_currole": {
+        "name": "Rol actual"
+      },
+      "f_easymeshenable": {
+        "name": "EasyMesh activat"
+      },
+      "f_guestssidenable": {
+        "name": "SSID de convidats activat"
+      },
+      "f_meshinfo_automode": {
+        "name": "Mesh: Mode automàtic"
+      },
+      "f_meshinfo_band": {
+        "name": "Mesh: Banda"
+      },
+      "f_meshinfo_controller": {
+        "name": "Mesh: Controlador"
+      },
+      "f_meshinfo_dataelementsenable": {
+        "name": "Mesh: Elements de dades activats"
+      },
+      "f_meshinfo_enable": {
+        "name": "Mesh: Activat"
+      },
+      "f_meshinfo_role": {
+        "name": "Mesh: Rol"
+      },
+      "f_stbvendorid_stbvendorid1": {
+        "name": "ID fabricant STB: STBVendor ID1"
+      },
+      "f_stbvendorid_stbvendorid2": {
+        "name": "ID fabricant STB: STBVendor ID2"
+      },
+      "f_stbvendorid_stbvendorid3": {
+        "name": "ID fabricant STB: STBVendor ID3"
+      },
+      "f_stbvendorid_stbvendorid4": {
+        "name": "ID fabricant STB: STBVendor ID4"
+      },
+      "f_stbvendorid_stbvendorid5": {
+        "name": "ID fabricant STB: STBVendor ID5"
+      },
+      "f_waninfo_wanifaceexist": {
+        "name": "WAN: Interfície WAN present"
+      },
+      "f_waninfo_wanstatus": {
+        "name": "WAN: Estat WAN"
+      },
+      "f_waninfo_wantype": {
+        "name": "WAN: Tipus WAN"
+      },
+      "f_connected_clients": {
+        "name": "Dispositius connectats"
+      },
+      "f_one_connect_one_connect_enable": {
+        "name": "One Connect activat"
+      },
+      "f_reboot": {
+        "name": "Reiniciar"
+      },
+      "f_startup_time": {
+        "name": "Hora d’arrencada"
+      },
+      "f_cellular_antenna_status": {
+        "name": "Estat de l’antena"
+      },
+      "f_cellular_cell_roaming_enable": {
+        "name": "Roaming activat"
+      },
+      "f_cellular_cell_roaming_status": {
+        "name": "Estat del roaming"
+      },
+      "f_cellular_intf_bsic": {
+        "name": "BSIC"
+      },
+      "f_cellular_intf_cqi": {
+        "name": "CQI"
+      },
+      "f_cellular_intf_cell_id": {
+        "name": "ID de cel·la"
+      },
+      "f_cellular_intf_current_access_technology": {
+        "name": "Tecnologia d’accés actual"
+      },
+      "f_cellular_intf_current_band": {
+        "name": "Banda actual"
+      },
+      "f_cellular_intf_downlink_bandwidth": {
+        "name": "Amplada de banda de baixada"
+      },
+      "f_cellular_intf_ecno": {
+        "name": "Ec/No"
+      },
+      "f_cellular_intf_imei": {
+        "name": "IMEI"
+      },
+      "f_cellular_intf_lac": {
+        "name": "LAC"
+      },
+      "f_cellular_intf_mcs": {
+        "name": "MCS"
+      },
+      "f_cellular_intf_module_software_version": {
+        "name": "Versió de programari del mòdul"
+      },
+      "f_cellular_intf_network_in_use": {
+        "name": "Xarxa en ús"
+      },
+      "f_cellular_intf_pmi": {
+        "name": "PMI"
+      },
+      "f_cellular_intf_phycell_id": {
+        "name": "ID de cel·la física"
+      },
+      "f_cellular_intf_rac": {
+        "name": "RAC"
+      },
+      "f_cellular_intf_rfcn": {
+        "name": "RFCN"
+      },
+      "f_cellular_intf_ri": {
+        "name": "RI"
+      },
+      "f_cellular_intf_rscp": {
+        "name": "RSCP"
+      },
+      "f_cellular_intf_rsrp": {
+        "name": "RSRP"
+      },
+      "f_cellular_intf_rsrq": {
+        "name": "RSRQ"
+      },
+      "f_cellular_intf_rssi": {
+        "name": "RSSI"
+      },
+      "f_cellular_intf_sinr": {
+        "name": "SINR"
+      },
+      "f_cellular_intf_status": {
+        "name": "Estat cel·lular"
+      },
+      "f_cellular_intf_supported_bands": {
+        "name": "Bandes compatibles"
+      },
+      "f_cellular_intf_tac": {
+        "name": "TAC"
+      },
+      "f_cellular_intf_uplink_bandwidth": {
+        "name": "Amplada de banda de pujada"
+      },
+      "f_cellular_nsa_band": {
+        "name": "Banda NSA"
+      },
+      "f_cellular_nsa_downlinkbandwidth": {
+        "name": "Amplada de banda de baixada NSA"
+      },
+      "f_cellular_nsa_enable": {
+        "name": "NSA activat"
+      },
+      "f_cellular_nsa_mcc": {
+        "name": "MCC NSA"
+      },
+      "f_cellular_nsa_mnc": {
+        "name": "MNC NSA"
+      },
+      "f_cellular_nsa_phycellid": {
+        "name": "ID de cel·la física NSA"
+      },
+      "f_cellular_nsa_rfcn": {
+        "name": "RFCN NSA"
+      },
+      "f_cellular_nsa_rsrp": {
+        "name": "RSRP NSA"
+      },
+      "f_cellular_nsa_rsrq": {
+        "name": "RSRQ NSA"
+      },
+      "f_cellular_nsa_rssi": {
+        "name": "RSSI NSA"
+      },
+      "f_cellular_nsa_sinr": {
+        "name": "SINR NSA"
+      },
+      "f_cellular_nsa_uplinkbandwidth": {
+        "name": "Amplada de banda de pujada NSA"
+      },
+      "f_cellular_usim_iccid": {
+        "name": "ICCID USIM"
+      },
+      "f_cellular_usim_imsi": {
+        "name": "IMSI USIM"
+      },
+      "f_cellular_usim_pin_protection": {
+        "name": "Protecció PIN USIM"
+      },
+      "f_cellular_usim_pin_remaining_attempts": {
+        "name": "Intents de PIN USIM restants"
+      },
+      "f_cellular_usim_status": {
+        "name": "Estat USIM"
+      },
+      "f_cellular_passthru_enable": {
+        "name": "Passthrough activat"
+      },
+      "f_cellular_passthru_macaddr": {
+        "name": "MAC de passthrough"
+      },
+      "f_cellular_passthru_mode": {
+        "name": "Mode passthrough"
+      },
+      "f_traffic_br0_broadcastpacketsreceived": {
+        "name": "Paquets broadcast rebuts (br0)"
+      },
+      "f_traffic_br0_broadcastpacketssent": {
+        "name": "Paquets broadcast enviats (br0)"
+      },
+      "f_traffic_br0_bytesreceived": {
+        "name": "Bytes rebuts (br0)"
+      },
+      "f_traffic_br0_bytessent": {
+        "name": "Bytes enviats (br0)"
+      },
+      "f_traffic_br0_discardpacketsreceived": {
+        "name": "Paquets descartats rebuts (br0)"
+      },
+      "f_traffic_br0_discardpacketssent": {
+        "name": "Paquets descartats enviats (br0)"
+      },
+      "f_traffic_br0_errorsreceived": {
+        "name": "Errors rebuts (br0)"
+      },
+      "f_traffic_br0_errorssent": {
+        "name": "Errors enviats (br0)"
+      },
+      "f_traffic_br0_multicastpacketsreceived": {
+        "name": "Paquets multicast rebuts (br0)"
+      },
+      "f_traffic_br0_multicastpacketssent": {
+        "name": "Paquets multicast enviats (br0)"
+      },
+      "f_traffic_br0_packetsreceived": {
+        "name": "Paquets rebuts (br0)"
+      },
+      "f_traffic_br0_packetssent": {
+        "name": "Paquets enviats (br0)"
+      },
+      "f_traffic_br0_unicastpacketsreceived": {
+        "name": "Paquets unicast rebuts (br0)"
+      },
+      "f_traffic_br0_unicastpacketssent": {
+        "name": "Paquets unicast enviats (br0)"
+      },
+      "f_traffic_br0_unknownprotopacketsreceived": {
+        "name": "Paquets de protocol desconegut rebuts (br0)"
+      },
+      "f_traffic_ccmni1_broadcastpacketsreceived": {
+        "name": "Paquets broadcast rebuts (ccmni1)"
+      },
+      "f_traffic_ccmni1_broadcastpacketssent": {
+        "name": "Paquets broadcast enviats (ccmni1)"
+      },
+      "f_traffic_ccmni1_bytesreceived": {
+        "name": "Bytes rebuts (ccmni1)"
+      },
+      "f_traffic_ccmni1_bytessent": {
+        "name": "Bytes enviats (ccmni1)"
+      },
+      "f_traffic_ccmni1_discardpacketsreceived": {
+        "name": "Paquets descartats rebuts (ccmni1)"
+      },
+      "f_traffic_ccmni1_discardpacketssent": {
+        "name": "Paquets descartats enviats (ccmni1)"
+      },
+      "f_traffic_ccmni1_errorsreceived": {
+        "name": "Errors rebuts (ccmni1)"
+      },
+      "f_traffic_ccmni1_errorssent": {
+        "name": "Errors enviats (ccmni1)"
+      },
+      "f_traffic_ccmni1_multicastpacketsreceived": {
+        "name": "Paquets multicast rebuts (ccmni1)"
+      },
+      "f_traffic_ccmni1_multicastpacketssent": {
+        "name": "Paquets multicast enviats (ccmni1)"
+      },
+      "f_traffic_ccmni1_packetsreceived": {
+        "name": "Paquets rebuts (ccmni1)"
+      },
+      "f_traffic_ccmni1_packetssent": {
+        "name": "Paquets enviats (ccmni1)"
+      },
+      "f_traffic_ccmni1_unicastpacketsreceived": {
+        "name": "Paquets unicast rebuts (ccmni1)"
+      },
+      "f_traffic_ccmni1_unicastpacketssent": {
+        "name": "Paquets unicast enviats (ccmni1)"
+      },
+      "f_traffic_ccmni1_unknownprotopacketsreceived": {
+        "name": "Paquets de protocol desconegut rebuts (ccmni1)"
+      },
+      "f_traffic_ccmni2_broadcastpacketsreceived": {
+        "name": "Paquets broadcast rebuts (ccmni2)"
+      },
+      "f_traffic_ccmni2_broadcastpacketssent": {
+        "name": "Paquets broadcast enviats (ccmni2)"
+      },
+      "f_traffic_ccmni2_bytesreceived": {
+        "name": "Bytes rebuts (ccmni2)"
+      },
+      "f_traffic_ccmni2_bytessent": {
+        "name": "Bytes enviats (ccmni2)"
+      },
+      "f_traffic_ccmni2_discardpacketsreceived": {
+        "name": "Paquets descartats rebuts (ccmni2)"
+      },
+      "f_traffic_ccmni2_discardpacketssent": {
+        "name": "Paquets descartats enviats (ccmni2)"
+      },
+      "f_traffic_ccmni2_errorsreceived": {
+        "name": "Errors rebuts (ccmni2)"
+      },
+      "f_traffic_ccmni2_errorssent": {
+        "name": "Errors enviats (ccmni2)"
+      },
+      "f_traffic_ccmni2_multicastpacketsreceived": {
+        "name": "Paquets multicast rebuts (ccmni2)"
+      },
+      "f_traffic_ccmni2_multicastpacketssent": {
+        "name": "Paquets multicast enviats (ccmni2)"
+      },
+      "f_traffic_ccmni2_packetsreceived": {
+        "name": "Paquets rebuts (ccmni2)"
+      },
+      "f_traffic_ccmni2_packetssent": {
+        "name": "Paquets enviats (ccmni2)"
+      },
+      "f_traffic_ccmni2_unicastpacketsreceived": {
+        "name": "Paquets unicast rebuts (ccmni2)"
+      },
+      "f_traffic_ccmni2_unicastpacketssent": {
+        "name": "Paquets unicast enviats (ccmni2)"
+      },
+      "f_traffic_ccmni2_unknownprotopacketsreceived": {
+        "name": "Paquets de protocol desconegut rebuts (ccmni2)"
+      },
+      "f_traffic_eth0_2_broadcastpacketsreceived": {
+        "name": "Traffic: Paquets broadcast rebuts"
+      },
+      "f_traffic_eth0_2_broadcastpacketssent": {
+        "name": "Traffic: Paquets broadcast enviats"
+      },
+      "f_traffic_eth0_2_bytesreceived": {
+        "name": "Traffic: Bytes rebuts"
+      },
+      "f_traffic_eth0_2_bytessent": {
+        "name": "Traffic: Bytes enviats"
+      },
+      "f_traffic_eth0_2_discardpacketsreceived": {
+        "name": "Traffic: Paquets descartats rebuts"
+      },
+      "f_traffic_eth0_2_discardpacketssent": {
+        "name": "Traffic: Paquets descartats enviats"
+      },
+      "f_traffic_eth0_2_errorsreceived": {
+        "name": "Traffic: Errors rebuts"
+      },
+      "f_traffic_eth0_2_errorssent": {
+        "name": "Traffic: Errors enviats"
+      },
+      "f_traffic_eth0_2_multicastpacketsreceived": {
+        "name": "Traffic: Paquets multicast rebuts"
+      },
+      "f_traffic_eth0_2_multicastpacketssent": {
+        "name": "Traffic: Paquets multicast enviats"
+      },
+      "f_traffic_eth0_2_packetsreceived": {
+        "name": "Traffic: Paquets rebuts"
+      },
+      "f_traffic_eth0_2_packetssent": {
+        "name": "Traffic: Paquets enviats"
+      },
+      "f_traffic_eth0_2_unicastpacketsreceived": {
+        "name": "Traffic: Paquets unicast rebuts"
+      },
+      "f_traffic_eth0_2_unicastpacketssent": {
+        "name": "Traffic: Paquets unicast enviats"
+      },
+      "f_traffic_eth0_2_unknownprotopacketsreceived": {
+        "name": "Traffic: Paquets de protocol desconegut rebuts"
+      },
+      "f_uptime": {
+        "name": "Temps d’activitat"
+      },
+      "f_x_zyxel_temperature_ambient": {
+        "name": "Temperatura ambient"
+      },
+      "f_x_zyxel_temperature_sdx": {
+        "name": "Temperatura SDX"
+      },
+      "f_x_zyxel_temperature_cpu0": {
+        "name": "Temperatura de la CPU"
+      },
+      "f_memusage": {
+        "name": "Ús de memòria"
+      },
+      "f_memoryusage": {
+        "name": "Ús de memòria"
+      },
+      "rssi": {
+        "name": "Força del senyal"
+      },
+      "snr": {
+        "name": "Relació senyal-soroll"
+      },
+      "signal_quality": {
+        "name": "Qualitat del senyal"
+      },
+      "link_rate": {
+        "name": "Velocitat d’enllaç"
+      },
+      "downlink_rate": {
+        "name": "Velocitat de baixada"
+      },
+      "uplink_rate": {
+        "name": "Velocitat de pujada"
+      },
+      "bytes_received": {
+        "name": "Bytes rebuts"
+      },
+      "bytes_sent": {
+        "name": "Bytes enviats"
+      },
+      "connected_duration": {
+        "name": "Durada de connexió"
+      },
+      "ip_address": {
+        "name": "Adreça IP"
+      },
+      "ssid": {
+        "name": "SSID"
+      },
+      "band": {
+        "name": "Banda"
+      },
+      "network": {
+        "name": "Xarxa"
+      },
+      "wifi_standard": {
+        "name": "Estàndard Wi‑Fi"
+      },
+      "connection_type": {
+        "name": "Tipus de connexió"
+      },
+      "device_type": {
+        "name": "Tipus de dispositiu"
+      },
+      "address_source": {
+        "name": "Origen de l’adreça"
+      },
+      "connected": {
+        "name": "Connectat"
+      },
+      "connected_devices": {
+        "name": "Dispositius connectats"
+      },
+      "memory_usage": {
+        "name": "Ús de memòria"
+      },
+      "startup_time": {
+        "name": "Hora d’arrencada"
+      },
+      "reboot": {
+        "name": "Reiniciar"
+      }
+    },
+    "binary_sensor": {
+      "connected": {
+        "name": "Connectat"
+      }
+    },
+    "button": {
+      "reboot": {
+        "name": "Reiniciar"
+      }
+    }
   }
 }
