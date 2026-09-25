@@ -50,13 +50,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     scan_interval = entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
     endpoints = endpoints_from_options(entry.options)
-    sms_client = ZyxelSmsClient(host, username, password)
 
     hass.data.setdefault(DOMAIN, {})
-    entry_data = {
+    entry_data: dict = {
         "router": router,
-        "sms_client": sms_client,
     }
+    # SMS must reuse the live nr7101 session (RSA/AES). A separate plaintext
+    # login fails on modern firmwares while sensor polling still works.
+    entry_data["sms_client"] = ZyxelSmsClient(lambda: entry_data["router"])
     hass.data[DOMAIN][entry.entry_id] = entry_data
 
     def _fetch():
