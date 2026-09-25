@@ -1,20 +1,38 @@
 # ha-zyxel
 
-<img src="https://raw.githubusercontent.com/zulufoxtrot/ha-zyxel/refs/heads/main/resources/logo.png" alt="Zyxel Logo" width="128"/>
-
-> 📢 🤓 **This project is looking for maintainers** 📢 🤓
-> 
-> If you are interested, get in touch!
+<img src="https://raw.githubusercontent.com/oscarsanchezdm/ha-zyxel/refs/heads/main/resources/logo.png" alt="Zyxel Logo" width="128"/>
 
 __Home Assistant integration for Zyxel devices__
 
-<img src="https://raw.githubusercontent.com/zulufoxtrot/ha-zyxel/refs/heads/main/resources/screenshot.png" alt="Zyxel Logo" />
+Fork of [zulufoxtrot/ha-zyxel](https://github.com/zulufoxtrot/ha-zyxel) with SMS support, device tracking, lighter default polling, and several reliability / UX fixes. See [Differences from upstream](#differences-from-upstream).
+
+<img src="https://raw.githubusercontent.com/oscarsanchezdm/ha-zyxel/refs/heads/main/resources/screenshot.png" alt="Zyxel Screenshot" />
 
 [![Open ha-zyxel on Home Assistant Community Store (HACS)](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=oscarsanchezdm&repository=ha-zyxel&category=integration)
 
+## Differences from upstream
+
+Compared with [zulufoxtrot/ha-zyxel](https://github.com/zulufoxtrot/ha-zyxel):
+
+| Area | What this fork adds / changes |
+|------|-------------------------------|
+| **SMS** | `ha_zyxel.send_sms` service for cellular modems (e.g. FWA505). Uses the same encrypted `nr7101` session as sensors (avoids 401 from a separate plaintext login). |
+| **Device tracking** | LAN clients as `device_tracker` entities, optional per-client diagnostic sensors, and a connectivity `binary_sensor`. Based on upstream [PR #57](https://github.com/zulufoxtrot/ha-zyxel/pull/57). |
+| **Reboot** | Reboot button entity (also present in recent upstream). |
+| **Session reliability** | Isolated cookies per router instance, authenticate before status fetch, bounded re-auth, self-heal by recreating the session on poll failure. |
+| **Lighter defaults** | Core polls are `status` + `lanhosts` only. Optional OIDs (`cellwan_status`, `lan`, `Traffic_Status`, `cardpage_status`, EasyMesh, One Connect) are **off by default** and configurable. Disabling an option removes related entities. |
+| **Fewer duplicates** | Overlapping fields from different API roots are collapsed to one sensor identity where appropriate. |
+| **Numeric sensors** | Values like CPU usage are coerced to numbers for history/statistics. Most auto-generated router sensors are **diagnostic** and **disabled by default**. |
+| **Uptime** | Duration device class where applicable, plus a stable **startup time** timestamp sensor. |
+| **Memory** | Derived **memory usage %** sensor from Total/Free. |
+| **Friendly names** | Readable entity names with translations in **English, Catalan, and French** (Home Assistant language setting). |
+| **Options UI** | Configure scan interval, consider-home, track-all, and optional OID polls from the integration options dialog. |
+
+Current integration version: see `custom_components/ha_zyxel/manifest.json`.
+
 ## Supported devices
 
-Confirmed working on:
+Confirmed working on (inherited from upstream, plus continued use on FWA505 and similar CPEs):
 
 - AX7501-B0
 - FWA505
@@ -34,65 +52,65 @@ Confirmed working on:
 - VMG8825-T50
 
 Potentially compatible with a lot more devices.
-If you do test and find out your device is working, please submit an issue or a pull request and I'll add it to the list.
+If you test another model successfully, please open an [issue](https://github.com/oscarsanchezdm/ha-zyxel/issues) or pull request.
 
 ## Installation
 
 Prerequisites:
 
-1. The device must be reachable from your home assistant instance (they need to be on the same local network)
-2. HTTP access must be enabled in the device's settings (it is the case by default)
+1. The device must be reachable from your Home Assistant instance (same local network)
+2. HTTP/HTTPS access must be enabled in the device settings (default on most models)
 
 ### Install via HACS (recommended)
 
 1. Install HACS
-2. Click the big blue button above
-3. Click Download and confirm
-4. Restart HA
+2. Add this repository as a custom repository (or use the badge above)
+3. Download **Zyxel** / `ha-zyxel`
+4. Restart Home Assistant
 
 ### Install manually
 
-1. SSH into your HA instance
-3. `git clone https://github.com/oscarsanchezdm/ha-zyxel`
-2. Navigate to `ha-zyxel/custom_components`
-4. Copy `ha_zyxel` to your HA instance's `custom_components` directory
-4. Restart your HA instance
+1. Clone `https://github.com/oscarsanchezdm/ha-zyxel`
+2. Copy `custom_components/ha_zyxel` into your HA `custom_components` directory
+3. Restart Home Assistant
 
 ## Adding a device
 
-1. Go to HA Settings > Devices & Services.
-2. Click Add Integration.
-3. Search for Zyxel.
-4. Select the Zyxel integration.
-5. In Host, type your hostname IP, usually something like https://192.168.1.1 (⚠️ enter the full URL scheme with `https://`)
-6. Type your admin username and password
-7. Click Submit.
+1. Go to HA Settings → Devices & Services
+2. Add Integration → search for **Zyxel**
+3. Host: full URL, e.g. `https://192.168.1.1` (include the scheme)
+4. Admin username and password
+5. Submit
 
-If connection fails, try with `http://` instead of `https://`.
+If connection fails, try `http://` instead of `https://`.
+
+After setup, open **Configure** on the integration to set scan interval, device tracking, and optional OID polls.
 
 ## Adding cards to your dashboard
 
-Add [this code](resources/card_example.yml) to your dashboard to add the cards pictured above. Follow the instructions from the animation below.
+Add [this code](resources/card_example.yml) to your dashboard for cards similar to the screenshot. Follow the animation below.
 
-Note: the Mushroom card extension is required for the above code to work.
+Note: the Mushroom card extension is required for that example.
 
 ![](resources/import_demo.gif)
 
 ## Available entities
 
-In theory, all items listed [here](https://github.com/pkorpine/nr7101?tab=readme-ov-file#example-output) should be available as entities. The entities are generated dynamically, meaning they can vary from one device to another. They depend on what the device lets us see.
+Entities are generated dynamically from what the router exposes (see [example status output](https://github.com/pkorpine/nr7101?tab=readme-ov-file#example-output)). Many diagnostic sensors are disabled by default — enable only what you need.
 
 ### Reboot button
 
-The integration exposes a **Zyxel Reboot Device** button entity. Press it from the UI or call `button.press` on `button.zyxel_reboot_device` to reboot the router remotely.
+Press **Reboot** on the device page, or call `button.press` on the reboot entity.
 
 ### Device tracking
 
-LAN clients are tracked as `device_tracker` entities (with consider-home), plus optional per-client diagnostic sensors and a connectivity binary sensor. Configure **scan interval**, **consider home**, and **track all** from the integration options.
+LAN clients appear as `device_tracker` entities (with consider-home). Optional per-client sensors (signal, rates, etc.) and a connectivity binary sensor are disabled by default.
 
-### Send SMS service
+Options: **scan interval**, **consider home**, **track all**.
 
-On devices with a cellular modem that supports SMS (e.g. FWA505), use:
+### Send SMS
+
+On cellular devices that support SMS (e.g. FWA505):
 
 ```yaml
 service: ha_zyxel.send_sms
@@ -105,8 +123,10 @@ Optional `device_id` is the config entry id when multiple Zyxel devices are conf
 
 ## Support
 
-Please submit an [issue](https://github.com/oscarsanchezdm/ha-zyxel/issues).
+Please submit an [issue](https://github.com/oscarsanchezdm/ha-zyxel/issues) on this fork.
 
 ## Credits
 
-This is a fork of [zulufoxtrot/ha-zyxel](https://github.com/zulufoxtrot/ha-zyxel) with SMS sending support and [PR #57](https://github.com/zulufoxtrot/ha-zyxel/pull/57) (device tracking + connection self-heal) integrated. The integration uses the [nr7101 library](https://github.com/zulufoxtrot/nr7101).
+- Upstream project: [zulufoxtrot/ha-zyxel](https://github.com/zulufoxtrot/ha-zyxel)
+- Device tracking / session work: [PR #57](https://github.com/zulufoxtrot/ha-zyxel/pull/57) and related contributions
+- Router API library: [nr7101](https://github.com/zulufoxtrot/nr7101) (also [pkorpine/nr7101](https://github.com/pkorpine/nr7101))
