@@ -28,7 +28,7 @@ Compared with [zulufoxtrot/ha-zyxel](https://github.com/zulufoxtrot/ha-zyxel):
 | **Friendly names** | Readable entity names with translations in **English, Catalan, and French** (Home Assistant language setting). |
 | **Options UI** | Configure scan interval, consider-home, track-all, and optional OID polls from the integration options dialog. |
 
-Current integration version: see `custom_components/ha_zyxel/manifest.json`.
+Current integration version: **1.0.0**
 
 ## Supported devices
 
